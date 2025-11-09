@@ -41,8 +41,9 @@ if (isset($_GET['cari'])) {
 
 $result = $koneksi->query($query);
 if (!$result) {
-    die("Query error: " . $koneksi->error);
+    die("<b>Query error:</b> " . $koneksi->error . "<br><br><b>Query:</b> " . $query);
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="id">
