@@ -1,0 +1,152 @@
+.volcano-container {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.volcano-info {
+    padding-right: 20px;
+    border-right: 2px solid #e5e7eb;
+}
+
+.volcano-image {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.volcano-image img {
+    width: 100%;
+    max-width: 280px;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.image-caption {
+    margin-top: 15px;
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    font-size: 14px;
+}
+
+.volcano-name {
+    color: #dc2626;
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    font-size: 18px;
+}
+
+.status-awas { background: #dc2626; color: white; }
+.status-siaga { background: #ea580c; color: white; }
+.status-waspada { background: #d97706; color: white; }
+.status-normal { background: #059669; color: white; }
+
+.info-section {
+    margin-bottom: 30px;
+}
+
+.section-title {
+    color: #374151;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 12px;
+    border-bottom: 2px solid #fee2e2;
+    padding-bottom: 5px;
+}
+
+.recommendation-list {
+    list-style: none;
+    padding: 0;
+}
+
+.recommendation-list li {
+    padding: 8px 0;
+    padding-left: 25px;
+    position: relative;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.recommendation-list li:before {
+    content: "⚠️";
+    position: absolute;
+    left: 0;
+    top: 8px;
+}
+
+.timeline {
+    list-style: none;
+    padding: 0;
+    position: relative;
+}
+
+.timeline:before {
+    content: "";
+    position: absolute;
+    left: 10px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #dc2626;
+}
+
+.timeline-item {
+    padding: 12px 0;
+    padding-left: 30px;
+    position: relative;
+}
+
+.timeline-item:before {
+    content: "";
+    position: absolute;
+    left: 6px;
+    top: 16px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #dc2626;
+    border: 2px solid white;
+    box-shadow: 0 0 0 2px #dc2626;
+}
+
+.timeline-date {
+    font-weight: bold;
+    color: #dc2626;
+}
+
+.divider {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #dc2626, transparent);
+    margin: 30px 0;
+    border: none;
+}
+
+@media (max-width: 768px) {
+    .volcano-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .volcano-info {
+        padding-right: 0;
+        border-right: none;
+        border-bottom: 2px solid #e5e7eb;
+        padding-bottom: 20px;
+    }
+}
