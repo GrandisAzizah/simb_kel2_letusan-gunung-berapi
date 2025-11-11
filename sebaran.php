@@ -1,22 +1,13 @@
 <?php
+// Pastikan koneksi.php sudah tersedia
 include 'koneksi.php';
 
-// Pencarian data
-$cari = "";
-if (isset($_GET['cari'])) {
-    $cari = $koneksi->real_escape_string($_GET['cari']);
-    $query = "SELECT * FROM sebaran_wilayah 
-              WHERE nama_gunung LIKE '%$cari%' 
-              OR wilayah_terdampak LIKE '%$cari%' 
-              ORDER BY waktu_kejadian DESC";
-} else {
-    $query = "SELECT * FROM sebaran_wilayah ORDER BY waktu_kejadian DESC";
+if (!$koneksi) {
+    die("Koneksi gagal: " . mysqli_connect_error());
 }
 
-$result = $koneksi->query($query);
-if (!$result) {
-    die("Query error: " . $koneksi->error);
-}
+// Variabel untuk menyimpan nilai pencarian, hanya untuk placeholder
+$cari = isset($_GET['cari']) ? htmlspecialchars($_GET['cari']) : '';
 ?>
 
 <!DOCTYPE html>
@@ -24,17 +15,15 @@ if (!$result) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sebaran Wilayah Terdampak</title>
+    <title>Sebaran Wilayah Terdampak Interaktif</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="template.css">
 </head>
-<body>
-    <!-- Navbar -->
-    <body class="d-flex flex-column min-vh-100">
+<body class="d-flex flex-column min-vh-100">
     <nav class="d-flex">
         <div class="container-fluid navbar-container">
             <div class="nav-left">
-                <!-- Sidebar icon -->
                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
                     class="bi bi-justify" viewBox="0 0 16 16" data-bs-toggle="offcanvas"
                     data-bs-target="#offcanvasSidebar">
@@ -57,7 +46,6 @@ if (!$result) {
                     </div>
                 </div>
 
-                <!-- Brand -->
                 <a class="navbar-brand" href="#">Volcanoes Monitor</a>
             </div>
 
@@ -74,56 +62,68 @@ if (!$result) {
         </div>
     </nav>
 
-    <!-- Konten Utama -->
     <div class="container mt-4 mb-5">
-        <h4 class="text-center fw-bold mb-4">Sebaran Wilayah Terdampak</h4>
+        <h4 class="text-center fw-bold mb-4">Sebaran Wilayah Terdampak 🌋</h4>
 
-        <!-- Form Pencarian -->
-        <form method="GET" action="" class="d-flex justify-content-center mb-3">
-            <input type="text" name="cari" placeholder="Cari Gunung / Wilayah"
-                   value="<?= htmlspecialchars($cari) ?>" class="form-control w-25">
-            <button type="submit" class="btn btn-outline-secondary ms-2">🔍</button>
-        </form>
+        <div class="d-flex justify-content-center mb-3">
+            <input type="text" id="live_search" placeholder="Cari Gunung / Wilayah"
+                   value="<?= $cari ?>" class="form-control w-50">
+            </div>
 
-        <!-- Tombol Tambah -->
         <div class="text-end mb-3">
             <a href="input_sebaran.php" class="btn btn-danger">+ Tambah Laporan Baru</a>
         </div>
+        
+        <div id="loading_indicator" class="text-center d-none">
+            <div class="spinner-border text-danger" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
 
-        <!-- Tabel Data -->
         <div class="table-responsive">
-            <table class="table table-bordered text-center align-middle">
-                <thead class="table-light">
+            <table class="table table-bordered table-hover text-center align-middle">
+                <thead class="table-danger">
                     <tr>
                         <th>Nama Gunung</th>
                         <th>Wilayah Terdampak</th>
                         <th>Waktu Kejadian</th>
                         <th>Jumlah Korban</th>
                         <th>Informasi Terbaru</th>
-                    </tr>
+                        <th style="width: 150px;">Aksi</th> </tr>
                 </thead>
-                <tbody>
-                    <?php if ($result->num_rows > 0): ?>
-                        <?php while ($row = $result->fetch_assoc()): ?>
-                            <tr>
-                                <td><?= htmlspecialchars($row['nama_gunung']) ?></td>
-                                <td><?= htmlspecialchars($row['wilayah_terdampak']) ?></td>
-                                <td><?= htmlspecialchars($row['waktu_kejadian']) ?></td>
-                                <td><?= htmlspecialchars($row['jumlah_korban']) ?></td>
-                                <td><?= htmlspecialchars($row['informasi_terbaru']) ?></td>
-                            </tr>
-                        <?php endwhile; ?>
-                    <?php else: ?>
-                        <tr>
-                            <td colspan="5">Belum ada laporan wilayah terdampak.</td>
-                        </tr>
-                    <?php endif; ?>
-                </tbody>
+                <tbody id="data_sebaran">
+                    </tbody>
             </table>
         </div>
+        
+        <div id="no_result" class="alert alert-warning text-center d-none" role="alert">
+            Tidak ada data yang ditemukan.
+        </div>
+    </div>
+    
+    <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header bg-danger text-white">
+            <h5 class="modal-title" id="detailModalLabel">Detail Informasi</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p><strong>Gunung:</strong> <span id="modal_gunung"></span></p>
+            <p><strong>Wilayah:</strong> <span id="modal_wilayah"></span></p>
+            <p><strong>Waktu:</strong> <span id="modal_waktu"></span></p>
+            <hr>
+            <h6>Informasi Terbaru:</h6>
+            <p id="modal_info"></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- Footer -->
+
     <footer class="mt-auto">
         <p class="fw-bolder text-center mb-0 mt-3">Volcanoes Monitor</p>
         <p class="text-center mb-0">Kontak Darurat: <strong>BNPB 0812-1237575 / 021-29827444</strong></p>
@@ -137,5 +137,121 @@ if (!$result) {
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <script>
+    $(document).ready(function(){
+        // Fungsi untuk mengambil data menggunakan AJAX
+        function fetchData(search_query = '') {
+            $('#loading_indicator').removeClass('d-none'); // Tampilkan loading
+            $('#data_sebaran').html(''); // Kosongkan data lama
+
+            $.ajax({
+                url: 'fetch_data.php', // File PHP terpisah
+                method: 'POST',
+                data: { cari: search_query },
+                dataType: 'json',
+                success: function(response) {
+                    $('#loading_indicator').addClass('d-none'); // Sembunyikan loading
+                    $('#data_sebaran').empty(); // Kosongkan lagi sebelum mengisi
+
+                    if (response.length > 0) {
+                        $('#no_result').addClass('d-none'); // Sembunyikan notif 'tidak ada data'
+                        $.each(response, function(i, row) {
+                            // Cek panjang informasi terbaru, potong jika terlalu panjang
+                            let infoPendek = row.informasi_terbaru.length > 50 ? 
+                                row.informasi_terbaru.substring(0, 50) + '...' : 
+                                row.informasi_terbaru;
+                            
+                            // Baris tabel dengan tombol aksi
+                            let newRow = `
+                                <tr>
+                                    <td>${row.nama_gunung}</td>
+                                    <td>${row.wilayah_terdampak}</td>
+                                    <td>${row.waktu_kejadian}</td>
+                                    <td>${row.jumlah_korban}</td>
+                                    <td>${infoPendek}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-info text-white btn-detail" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#detailModal"
+                                                data-gunung="${row.nama_gunung}"
+                                                data-wilayah="${row.wilayah_terdampak}"
+                                                data-waktu="${row.waktu_kejadian}"
+                                                data-info="${row.informasi_terbaru}">
+                                            Detail
+                                        </button>
+                                        <a href="edit_sebaran.php?id=${row.id}" class="btn btn-sm btn-warning">✏️</a>
+                                        <button class="btn btn-sm btn-danger btn-hapus" data-id="${row.id}">🗑️</button>
+                                    </td>
+                                </tr>
+                            `;
+                            $('#data_sebaran').append(newRow);
+                        });
+                    } else {
+                        // Tampilkan pesan 'Tidak ada data'
+                        $('#no_result').removeClass('d-none');
+                    }
+                },
+                error: function() {
+                    $('#loading_indicator').addClass('d-none');
+                    $('#data_sebaran').html('<tr><td colspan="6" class="text-danger">Terjadi kesalahan saat mengambil data.</td></tr>');
+                    $('#no_result').addClass('d-none');
+                }
+            });
+        }
+
+        // Panggil fetchData saat halaman dimuat (untuk data awal)
+        fetchData($('#live_search').val()); 
+
+        // Live Search: Panggil fetchData saat nilai input berubah (ketika mengetik)
+        $('#live_search').on('keyup', function(){
+            let search_val = $(this).val();
+            fetchData(search_val);
+        });
+
+        // Event Listener untuk tombol Detail (mengisi Modal)
+        $('#data_sebaran').on('click', '.btn-detail', function() {
+            let gunung = $(this).data('gunung');
+            let wilayah = $(this).data('wilayah');
+            let waktu = $(this).data('waktu');
+            let info = $(this).data('info');
+
+            $('#modal_gunung').text(gunung);
+            $('#modal_wilayah').text(wilayah);
+            $('#modal_waktu').text(waktu);
+            $('#modal_info').text(info);
+        });
+        
+        // Event Listener untuk tombol Hapus (menggunakan SweetAlert)
+        $('#data_sebaran').on('click', '.btn-hapus', function() {
+            let id = $(this).data('id');
+            
+            Swal.fire({
+                title: 'Yakin menghapus data?',
+                text: "Data yang dihapus tidak dapat dikembalikan!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Di sini Anda akan menambahkan kode AJAX untuk menghapus data dari database
+                    // Contoh: window.location.href = 'hapus_sebaran.php?id=' + id;
+                    Swal.fire(
+                        'Dihapus!',
+                        'Data ID ' + id + ' telah dihapus. (Ini hanya simulasi)',
+                        'success'
+                    );
+                    // Panggil fetchData() lagi setelah penghapusan berhasil
+                    // fetchData($('#live_search').val());
+                }
+            });
+        });
+
+    });
+    </script>
 </body>
 </html>
