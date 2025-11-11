@@ -1,12 +1,7 @@
 <?php
-// Pastikan koneksi.php sudah tersedia
-include 'koneksi.php';
+// sebaran.php - Tidak perlu include koneksi.php karena tidak mengakses DB lokal
 
-if (!$koneksi) {
-    die("Koneksi gagal: " . mysqli_connect_error());
-}
-
-// Variabel untuk menyimpan nilai pencarian, hanya untuk placeholder
+// Variabel untuk nilai pencarian awal (jika ada dari URL, tapi akan ditangani oleh JS)
 $cari = isset($_GET['cari']) ? htmlspecialchars($_GET['cari']) : '';
 ?>
 
@@ -15,10 +10,10 @@ $cari = isset($_GET['cari']) ? htmlspecialchars($_GET['cari']) : '';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sebaran Wilayah Terdampak Interaktif</title>
+    <title>Sebaran Wilayah Terdampak (API Live)</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link rel="stylesheet" href="template.css">
+    <link rel="stylesheet" href="template.css"> 
 </head>
 <body class="d-flex flex-column min-vh-100">
     <nav class="d-flex">
@@ -61,19 +56,23 @@ $cari = isset($_GET['cari']) ? htmlspecialchars($_GET['cari']) : '';
             </div>
         </div>
     </nav>
-
     <div class="container mt-4 mb-5">
-        <h4 class="text-center fw-bold mb-4">Sebaran Wilayah Terdampak 🌋</h4>
+        <h4 class="text-center fw-bold mb-4">Sebaran Wilayah Terdampak (Data Realtime) 🌋</h4>
 
         <div class="d-flex justify-content-center mb-3">
             <input type="text" id="live_search" placeholder="Cari Gunung / Wilayah"
                    value="<?= $cari ?>" class="form-control w-50">
-            </div>
+        </div>
 
         <div class="text-end mb-3">
-            <a href="input_sebaran.php" class="btn btn-danger">+ Tambah Laporan Baru</a>
+            <button class="btn btn-primary" onclick="fetchData($('#live_search').val())">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
+                    <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.69 2.067a.25.25 0 0 1 0 .384l-2.69 2.067A.25.25 0 0 1 8 4.466"/>
+                </svg> Muat Ulang Data
+            </button>
         </div>
-        
+
         <div id="loading_indicator" class="text-center d-none">
             <div class="spinner-border text-danger" role="status">
                 <span class="visually-hidden">Loading...</span>
@@ -87,9 +86,10 @@ $cari = isset($_GET['cari']) ? htmlspecialchars($_GET['cari']) : '';
                         <th>Nama Gunung</th>
                         <th>Wilayah Terdampak</th>
                         <th>Waktu Kejadian</th>
-                        <th>Jumlah Korban</th>
+                        <th>Jumlah Korban (Est.)</th>
                         <th>Informasi Terbaru</th>
-                        <th style="width: 150px;">Aksi</th> </tr>
+                        <th style="width: 100px;">Aksi</th>
+                    </tr>
                 </thead>
                 <tbody id="data_sebaran">
                     </tbody>
@@ -97,7 +97,7 @@ $cari = isset($_GET['cari']) ? htmlspecialchars($_GET['cari']) : '';
         </div>
         
         <div id="no_result" class="alert alert-warning text-center d-none" role="alert">
-            Tidak ada data yang ditemukan.
+            Tidak ada data sebaran yang ditemukan.
         </div>
     </div>
     
@@ -123,7 +123,6 @@ $cari = isset($_GET['cari']) ? htmlspecialchars($_GET['cari']) : '';
       </div>
     </div>
 
-
     <footer class="mt-auto">
         <p class="fw-bolder text-center mb-0 mt-3">Volcanoes Monitor</p>
         <p class="text-center mb-0">Kontak Darurat: <strong>BNPB 0812-1237575 / 021-29827444</strong></p>
@@ -135,35 +134,44 @@ $cari = isset($_GET['cari']) ? htmlspecialchars($_GET['cari']) : '';
         </div>
     </footer>
 
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     
     <script>
     $(document).ready(function(){
+        // Panggil fetchData saat halaman dimuat (untuk data awal)
+        fetchData($('#live_search').val()); 
+
         // Fungsi untuk mengambil data menggunakan AJAX
         function fetchData(search_query = '') {
-            $('#loading_indicator').removeClass('d-none'); // Tampilkan loading
-            $('#data_sebaran').html(''); // Kosongkan data lama
+            $('#loading_indicator').removeClass('d-none'); 
+            $('#data_sebaran').html(''); 
 
             $.ajax({
-                url: 'fetch_data.php', // File PHP terpisah
+                url: 'fetch_api_data.php', // Memanggil file PHP Proxy
                 method: 'POST',
-                data: { cari: search_query },
+                data: { cari: search_query }, // Mengirim query pencarian
                 dataType: 'json',
                 success: function(response) {
-                    $('#loading_indicator').addClass('d-none'); // Sembunyikan loading
-                    $('#data_sebaran').empty(); // Kosongkan lagi sebelum mengisi
+                    $('#loading_indicator').addClass('d-none');
+                    $('#data_sebaran').empty();
+                    
+                    // Cek jika response adalah array/object valid
+                    if (response && response.data && response.data.length > 0) {
+                        $('#no_result').addClass('d-none');
+                        
+                        // NOTE: Lakukan FILTER di sini jika API tidak mendukung filter
+                        // Karena kita mengirim 'cari' ke fetch_api_data.php, kita asumsikan 
+                        // filtering dilakukan di backend atau data yang dikembalikan sudah difilter.
 
-                    if (response.length > 0) {
-                        $('#no_result').addClass('d-none'); // Sembunyikan notif 'tidak ada data'
-                        $.each(response, function(i, row) {
-                            // Cek panjang informasi terbaru, potong jika terlalu panjang
+                        $.each(response.data, function(i, row) {
+                            // *** PENTING: SESUAIKAN NAMA PROPERTI JSON DENGAN STRUKTUR API ANDA ***
+                            // Contoh properti: gunung, wilayah, waktu, korban, info
+                            
                             let infoPendek = row.informasi_terbaru.length > 50 ? 
                                 row.informasi_terbaru.substring(0, 50) + '...' : 
                                 row.informasi_terbaru;
                             
-                            // Baris tabel dengan tombol aksi
                             let newRow = `
                                 <tr>
                                     <td>${row.nama_gunung}</td>
@@ -181,28 +189,22 @@ $cari = isset($_GET['cari']) ? htmlspecialchars($_GET['cari']) : '';
                                                 data-info="${row.informasi_terbaru}">
                                             Detail
                                         </button>
-                                        <a href="edit_sebaran.php?id=${row.id}" class="btn btn-sm btn-warning">✏️</a>
-                                        <button class="btn btn-sm btn-danger btn-hapus" data-id="${row.id}">🗑️</button>
                                     </td>
                                 </tr>
                             `;
                             $('#data_sebaran').append(newRow);
                         });
                     } else {
-                        // Tampilkan pesan 'Tidak ada data'
                         $('#no_result').removeClass('d-none');
                     }
                 },
-                error: function() {
+                error: function(xhr, status, error) {
                     $('#loading_indicator').addClass('d-none');
-                    $('#data_sebaran').html('<tr><td colspan="6" class="text-danger">Terjadi kesalahan saat mengambil data.</td></tr>');
+                    $('#data_sebaran').html('<tr><td colspan="6" class="text-danger">Terjadi kesalahan saat mengambil data: ' + xhr.responseText + '</td></tr>');
                     $('#no_result').addClass('d-none');
                 }
             });
         }
-
-        // Panggil fetchData saat halaman dimuat (untuk data awal)
-        fetchData($('#live_search').val()); 
 
         // Live Search: Panggil fetchData saat nilai input berubah (ketika mengetik)
         $('#live_search').on('keyup', function(){
@@ -223,34 +225,6 @@ $cari = isset($_GET['cari']) ? htmlspecialchars($_GET['cari']) : '';
             $('#modal_info').text(info);
         });
         
-        // Event Listener untuk tombol Hapus (menggunakan SweetAlert)
-        $('#data_sebaran').on('click', '.btn-hapus', function() {
-            let id = $(this).data('id');
-            
-            Swal.fire({
-                title: 'Yakin menghapus data?',
-                text: "Data yang dihapus tidak dapat dikembalikan!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Ya, Hapus!',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Di sini Anda akan menambahkan kode AJAX untuk menghapus data dari database
-                    // Contoh: window.location.href = 'hapus_sebaran.php?id=' + id;
-                    Swal.fire(
-                        'Dihapus!',
-                        'Data ID ' + id + ' telah dihapus. (Ini hanya simulasi)',
-                        'success'
-                    );
-                    // Panggil fetchData() lagi setelah penghapusan berhasil
-                    // fetchData($('#live_search').val());
-                }
-            });
-        });
-
     });
     </script>
 </body>
