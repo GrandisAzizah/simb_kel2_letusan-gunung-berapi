@@ -538,6 +538,11 @@ if (!$result) {
             </form>
         </div>
 
+        <!-- Tombol Tambah -->
+        <div class="text-end mb-3 add-button-container">
+            <a href="input_sebaran.php" class="btn btn-danger">+ Tambah Laporan Baru</a>
+        </div>
+
         <!-- Tabel Data -->
         <div class="table-responsive">
             <table class="table table-bordered text-center align-middle">
