@@ -499,7 +499,7 @@ if (!$result) {
                     <div class="offcanvas-body justify-content-start">
                         <a href="index.php">Beranda</a>
                         <a href="status.php">Cek Status Gunung</a>
-                        <a href="sebaran.php">Wilayah Terdampak</a>
+                        <a href="sebaran_petugas.php">Wilayah Terdampak</a>
                         <a href="dataPosko.php">Posko & Logistik</a>
                         <a href="dataKorban.php">Data Korban & Pengungsi</a>
                         <a href="laporan.php">Laporan Kejadian & Riwayat Letusan</a>

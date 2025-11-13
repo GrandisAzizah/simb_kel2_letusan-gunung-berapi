@@ -447,7 +447,7 @@
                     <div class="offcanvas-body justify-content-start">
                         <a href="index.php">Beranda</a>
                         <a href="status.php">Cek Status Gunung</a>
-                        <a href="sebaran.php">Wilayah Terdampak</a>
+                        <a href="sebaran_petugas.php">Wilayah Terdampak</a>
                         <a href="dataPosko.php">Posko & Logistik</a>
                         <a href="dataKorban.php">Data Korban & Pengungsi</a>
                         <a href="laporan.php">Laporan Kejadian & Riwayat Letusan</a>
@@ -506,7 +506,7 @@
 
                 <div class="button-container">
                     <div class="d-flex justify-content-between">
-                        <a href="sebaran.php" class="btn btn-secondary">← Kembali</a>
+                        <a href="sebaran_petugas.php" class="btn btn-secondary">← Kembali</a>
                         <button type="submit" name="submit" class="btn btn-danger" id="submitBtn">Simpan Laporan</button>
                     </div>
                 </div>
@@ -660,7 +660,7 @@ if (isset($_POST['submit'])) {
               VALUES ('$nama_gunung', '$wilayah', '$waktu', '$korban', '$info')";
 
     if ($koneksi->query($query)) {
-        echo "<script>alert('Laporan berhasil disimpan!'); window.location='sebaran.php';</script>";
+        echo "<script>alert('Laporan berhasil disimpan!'); window.location='sebaran_petugas.php';</script>";
     } else {
         echo "<div class='alert alert-danger text-center mt-3'>Gagal menyimpan laporan: " . $koneksi->error . "</div>";
     }
