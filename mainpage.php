@@ -138,6 +138,74 @@
             transform: translateY(-3px);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
         }
+        
+        .content-section {
+            padding: 60px 0;
+        }
+
+        .section-title {
+            color: #dc2626;
+            font-weight: 700;
+            margin-bottom: 30px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background-color: #dc2626;
+        }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .info-card {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-card h3 {
+            color: #dc2626;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .info-card i {
+            font-size: 2rem;
+            color: #dc2626;
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 <body>
@@ -177,9 +245,30 @@
             </div>
         </div>
     </section>
-<br>
-    deskripsi dan lain sebagainya disini 
-
+    <section class="content-section" id="content">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <h2 class="section-title">Tentang Gunung Berapi</h2>
+                    <p>Gunung berapi adalah sistem saluran fluida panas (batuan dalam wujud cair atau lava) yang memanjang dari kedalaman sekitar 10 km di bawah permukaan bumi sampai ke permukaan bumi, termasuk endapan hasil akumulasi material yang dikeluarkan pada saat meletus.</p>
+                    
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/LQwZwKS9RPs" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    
+                    <p>Indonesia merupakan negara dengan jumlah gunung berapi aktif terbanyak di dunia. Hal ini disebabkan oleh lokasi Indonesia yang berada di pertemuan tiga lempeng tektonik utama dunia, yaitu Lempeng Eurasia, Lempeng Indo-Australia, dan Lempeng Pasifik.</p>
+                </div>
+                
+                <div class="col-lg-4">
+                    <div class="info-card">
+                        <i class="fas fa-mountain"></i>
+                        <h3>Fakta Gunung Berapi Indonesia</h3>
+                        <p>Indonesia memiliki 127 gunung berapi aktif yang tersebar di berbagai pulau, dengan konsentrasi tertinggi di Pulau Jawa, Sumatera, dan Sulawesi.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
     <footer>
         <div class="container">
             <div class="row">
