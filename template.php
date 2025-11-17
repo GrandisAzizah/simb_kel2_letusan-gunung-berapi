@@ -30,7 +30,7 @@
                         <a href="">Beranda</a>
                         <a href="status.php">Cek Status Gunung</a>
                         <a href="">Wilayah Terdampak</a>
-                        <a href="input_dataposko_user.php">Posko & Logistik</a>
+                        <a href="dataPosko.php">Posko & Logistik</a>
                         <a href="">Data Korban & Pengungsi</a>
                         <a href="laporan.php">Laporan Kejadian & Riwayat Letusan</a>
                     </div>
@@ -163,3 +163,4 @@
 
 
 </html>
+
