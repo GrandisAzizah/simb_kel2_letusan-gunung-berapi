@@ -149,13 +149,13 @@
                         <h5 class="offcanvas-title" id="offcanvasScrollingLabel"></h5>
                         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                     </div>
-                    <div class="offcanvas-body justify-content-start">
-                        <a href="">Beranda</a>
-                        <a href="status.php">Cek Status Gunung</a>
-                        <a href="">Wilayah Terdampak</a>
-                        <a href="dataPosko.php">Posko & Logistik</a>
-                        <a href="">Data Korban & Pengungsi</a>
-                        <a href="laporan.php">Laporan Kejadian & Riwayat Letusan</a>
+                     <div class="offcanvas-body">
+                        <a href="mainpage.php" class="offcanvas-link">Beranda</a>
+                        <a href="status.php" class="offcanvas-link">Cek Status Gunung</a>
+                        <a href="sebaran.php" class="offcanvas-link">Wilayah Terdampak</a>
+                        <a href="dataPosko.php" class="offcanvas-link">Posko & Logistik</a>
+                        <a href="" class="offcanvas-link">Data Korban & Pengungsi</a>
+                        <a href="laporan.php" class="offcanvas-link">Laporan Kejadian & Riwayat Letusan</a>
                     </div>
                 </div>
 
@@ -403,5 +403,6 @@
         document.addEventListener('DOMContentLoaded', loadData);
     </script>
 </body>
+
 
 </html>
