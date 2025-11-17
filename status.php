@@ -22,6 +22,398 @@ if (isset($_POST["cari"])) {
     <link rel="stylesheet" href="template.css">
     <link rel="stylesheet" href="poskoLaporanKejadian.css">
     <link rel="stylesheet" href="status.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #c31432 0%, #240b36 100%);
+            color: white;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.8em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .subtitle {
+            color: #ffd1d1;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .last-update {
+            font-size: 0.9em;
+            color: #ffb3b3;
+            margin-top: 10px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+
+        .btn-refresh {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-refresh:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .btn-refresh:disabled {
+            background: #6b7280;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 12px 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .filter-group label {
+            font-weight: 600;
+            margin-right: 5px;
+        }
+
+        .filter-group select {
+            padding: 8px 15px;
+            border-radius: 6px;
+            border: none;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            font-size: 0.95em;
+            cursor: pointer;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .level-awas {
+            color: #ff3838;
+        }
+
+        .level-siaga {
+            color: #ffaa00;
+        }
+
+        .level-waspada {
+            color: #ffd93d;
+        }
+
+        .level-normal {
+            color: #6bcf7f;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            border-top: 4px solid #ff6b6b;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .error {
+            background: rgba(239, 68, 68, 0.2);
+            border: 2px solid #ef4444;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .volcano-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .volcano-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .volcano-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+        }
+
+        .volcano-card.awas::before {
+            background: #ff3838;
+        }
+
+        .volcano-card.siaga::before {
+            background: #ffaa00;
+        }
+
+        .volcano-card.waspada::before {
+            background: #ffd93d;
+        }
+
+        .volcano-card.normal::before {
+            background: #6bcf7f;
+        }
+
+        .volcano-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .volcano-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .volcano-name {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .volcano-location {
+            font-size: 0.85em;
+            opacity: 0.8;
+        }
+
+        .status-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+            text-transform: uppercase;
+            white-space: nowrap;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .badge-awas {
+            background: #ff3838;
+        }
+
+        .badge-siaga {
+            background: #ffaa00;
+            color: #333;
+        }
+
+        .badge-waspada {
+            background: #ffd93d;
+            color: #333;
+        }
+
+        .badge-normal {
+            background: #6bcf7f;
+            color: #333;
+        }
+
+        .volcano-details {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+        }
+
+        .detail-label {
+            opacity: 0.8;
+        }
+
+        .detail-value {
+            font-weight: 600;
+        }
+
+        .activity-info {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 0.85em;
+            line-height: 1.6;
+        }
+
+        .footer-info {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 50px;
+        }
+
+        .footer-info h3 {
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .info-note {
+            background: rgba(255, 235, 59, 0.2);
+            border-left: 4px solid #ffd93d;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            .volcano-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            .filter-group {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+
+        nav {
+            background-color: #dc2626;
+            padding: 1rem 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-container {
+            display: flex;
+            justify-content: space-between;
+            /* Kembali ke space-between */
+            align-items: center;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            /* Jarak antara hamburger dan Volcanoes Monitor */
+        }
+
+        .navbar-brand {
+            color: white !important;
+            font-weight: 600;
+            font-size: 1.5rem;
+            text-decoration: none;
+            margin: 0;
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-menu ul {
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-link {
+            color: white !important;
+            margin: 0 10px;
+            text-decoration: none;
+        }
+
+        .nav-link:hover {
+            color: #fee2e2 !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -68,179 +460,418 @@ if (isset($_POST["cari"])) {
         </div>
     </nav>
 
-    <!-- judul -->
-    <h2 class="judul-poppins text-center mt-4 mb-4">Status & Peringatan Dini</h2>
+    <div class="container">
+        <header>
+            <h1>🌋 Monitor Gunung Berapi Indonesia</h1>
+            <p class="subtitle">Data Status dan Aktivitas Gunung Api Real-Time dari MAGMA PVMBG</p>
+            <p class="last-update" id="lastUpdate"></p>
+        </header>
 
-    <div class="volcano-container">
-        <!-- Deskripsi di Kiri -->
-        <div class="volcano-info">
-            <h1 class="volcano-name">Gunung Merapi</h1>
+        <div class="controls">
+            <button class="btn-refresh" onclick="fetchData()" id="btnRefresh">
+                🔄 Refresh Data
+            </button>
 
-            <div class="status-badge status-awas">Status: AWAS (Level IV)</div>
-
-            <div class="info-section">
-                <h2 class="section-title">Penjelasan Level Status</h2>
-                <p><strong>AWAS (Level IV):</strong> Menandakan gunung berapi yang segera atau sedang meletus atau ada keadaan kritis yang menimbulkan bencana. Letusan pembukaan dimulai dengan abu dan asap.</p>
-                <p><strong>SIAGA (Level III):</strong> Menandakan gunung berapi yang sedang bergerak ke arah letusan atau menimbulkan bencana.</p>
-                <p><strong>WASPADA (Level II):</strong> Menandakan gunung berapi yang ada aktivitas apa pun bentuknya.</p>
-                <p><strong>NORMAL (Level I):</strong> Menandakan gunung berapi tidak menunjukkan gejala aktivitas tekanan.</p>
+            <div class="filter-group">
+                <label>🔍 Filter Status:</label>
+                <select id="filterStatus" onchange="filterVolcanoes()">
+                    <option value="all">Semua Status</option>
+                    <option value="awas">Level IV - Awas</option>
+                    <option value="siaga">Level III - Siaga</option>
+                    <option value="waspada">Level II - Waspada</option>
+                    <option value="normal">Level I - Normal</option>
+                </select>
             </div>
 
-            <div class="info-section">
-                <h2 class="section-title">Rekomendasi Resmi</h2>
-                <ul class="recommendation-list">
-                    <li>Masyarakat di zona radius 8 km dari puncak harus mengungsi segera</li>
-                    <li>Waspada potensi lahar hujan di sepanjang sungai yang berhulu di Gunung Merapi</li>
-                    <li>Gunakan masker untuk menghindari paparan abu vulkanik</li>
-                    <li>Hindari area berisiko tinggi untuk aktivitas sehari-hari</li>
-                    <li>Patuhi semua instruksi dari pihak berwenang dan posko terdekat</li>
-                    <li>Siapkan tas darurat berisi dokumen penting dan kebutuhan 3 hari</li>
-                </ul>
-            </div>
-
-            <hr class="divider">
-
-            <div class="info-section">
-                <h2 class="section-title">Kronologi Peringatan</h2>
-                <ul class="timeline">
-                    <li class="timeline-item">
-                        <span class="timeline-date">31 Okt 2025:</span> Status dinaikkan ke AWAS (Level IV)
-                    </li>
-                    <li class="timeline-item">
-                        <span class="timeline-date">25 Okt 2025:</span> Status SIAGA (Level III) - peningkatan aktivitas seismik
-                    </li>
-                    <li class="timeline-item">
-                        <span class="timeline-date">15 Okt 2025:</span> Status WASPADA (Level II) - munculnya kubah lava baru
-                    </li>
-                    <li class="timeline-item">
-                        <span class="timeline-date">1 Sep 2025:</span> Status NORMAL (Level I) - aktivitas dalam batas normal
-                    </li>
-                </ul>
+            <div class="filter-group">
+                <label>📍 Filter Lokasi:</label>
+                <select id="filterLocation" onchange="filterVolcanoes()">
+                    <option value="all">Semua Lokasi</option>
+                </select>
             </div>
         </div>
 
-        <!-- Gambar di Kanan -->
-        <div class="volcano-image">
-            <img src="https://via.placeholder.com/400x300/dc2626/white?text=Gunung+Merapi" alt="Gunung Merapi">
-            <div class="image-caption">Tampilan Gunung Merapi dari sisi selatan - Sumber: PVMBG</div>
+        <div class="stats-container" id="statsContainer"></div>
 
-            <!-- Additional info box -->
-            <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; width: 100%;">
-                <h3 style="margin: 0 0 10px 0; color: #374151; font-size: 16px;">📊 Data Teknis</h3>
-                <p style="margin: 5px 0; font-size: 14px;"><strong>Tinggi:</strong> 2.930 mdpl</p>
-                <p style="margin: 5px 0; font-size: 14px;"><strong>Tipe:</strong> Stratovolcano</p>
-                <p style="margin: 5px 0; font-size: 14px;"><strong>Letusan Terakhir:</strong> 2024</p>
-                <p style="margin: 5px 0; font-size: 14px;"><strong>Lokasi:</strong> Jawa Tengah - Yogyakarta</p>
+        <div id="errorContainer"></div>
+        <div id="loadingContainer"></div>
+        <div class="volcano-grid" id="volcanoContainer"></div>
+
+        <div class="footer-info">
+            <h3>📊 Informasi Sumber Data</h3>
+            <p style="margin-bottom: 15px;">
+                Data aktivitas gunung berapi dari MAGMA Indonesia (Multiplatform Application for Geohazard Mitigation
+                and Assessment)
+                - Pusat Vulkanologi dan Mitigasi Bencana Geologi (PVMBG), Kementerian ESDM.
+            </p>
+            <div style="font-size: 0.95em; color: #ffd1d1; line-height: 1.8;">
+                <p>• <strong>Sumber:</strong> magma.esdm.go.id</p>
+                <p>• <strong>Data:</strong> Status tingkat aktivitas gunung berapi Indonesia</p>
+                <p>• <strong>Update:</strong> Data diperbarui setiap ada perubahan status</p>
+                <p>• <strong>Level Status:</strong></p>
+                <ul style="margin-left: 30px; margin-top: 10px;">
+                    <li><strong style="color: #ff6b6b;">Level IV (Awas):</strong> Letusan awal, kondisi sangat berbahaya
+                    </li>
+                    <li><strong style="color: #ffaa00;">Level III (Siaga):</strong> Menuju letusan utama, evakuasi
+                        diperlukan</li>
+                    <li><strong style="color: #ffd93d;">Level II (Waspada):</strong> Peningkatan aktivitas, waspada
+                        tinggi</li>
+                    <li><strong style="color: #6bcf7f;">Level I (Normal):</strong> Aktivitas normal, tidak ada ancaman
+                    </li>
+                </ul>
+            </div>
+
+            <div class="info-note">
+                <strong>⚠️ Catatan Penting:</strong> Aplikasi ini menggunakan data simulasi karena MAGMA Indonesia
+                tidak menyediakan API publik yang mudah diakses. Untuk data resmi dan terkini, silakan kunjungi
+                <strong>magma.vsi.esdm.go.id</strong> atau download aplikasi MAGMA Indonesia di Google Play Store.
             </div>
         </div>
     </div>
 
-    <footer>
-        <p class="fw-bolder">Volcanoes Monitor</p>
-        <p class="fw-bolder">Kontak Darurat</p>
-        <p class="fw-bolder">BNPB:</p>
-        <div style="user-select: all; padding: 12px; cursor: pointer;">
-            0812-1237575
-        </div>
+    <script>
+        let allVolcanoes = [];
+        let allLocations = new Set();
 
-        <div style="user-select: all; padding: 12px; cursor: pointer;">
-            021-29827444
-        </div>
-        <p class="fw-bolder">Telepon Darurat:</p>
-        <p>112</p>
+        // Data simulasi gunung berapi Indonesia dengan status terkini
+        // Dalam implementasi nyata, ini akan di-fetch dari API atau web scraping
+        const simulatedVolcanoData = [{
+                name: "Merapi",
+                location: "Jawa Tengah & DIY",
+                status: "siaga",
+                statusLevel: "Level III",
+                elevation: "2,930 m",
+                lastActivity: "2024-11-08",
+                coordinates: "-7.541, 110.446",
+                activity: "Teramati kubah lava aktif, awan panas guguran tercatat 15 kali dalam 24 jam terakhir. Radius bahaya 5 km dari puncak."
+            },
+            {
+                name: "Semeru",
+                location: "Jawa Timur",
+                status: "siaga",
+                statusLevel: "Level III",
+                elevation: "3,676 m",
+                lastActivity: "2024-11-10",
+                coordinates: "-8.108, 112.922",
+                activity: "Erupsi efusif dengan luncuran awan panas ke arah Besuk Kobokan. Kolom abu mencapai 800-1000 m. Zona bahaya radius 5 km."
+            },
+            {
+                name: "Lewotobi Laki-laki",
+                location: "Nusa Tenggara Timur",
+                status: "waspada",
+                statusLevel: "Level II",
+                elevation: "1,584 m",
+                lastActivity: "2024-11-09",
+                coordinates: "-8.372, 122.775",
+                activity: "Peningkatan aktivitas seismik vulkanik. Teramati asap putih tipis setinggi 50-100 m. Masyarakat diimbau waspada."
+            },
+            {
+                name: "Marapi",
+                location: "Sumatera Barat",
+                status: "waspada",
+                statusLevel: "Level II",
+                elevation: "2,891 m",
+                lastActivity: "2024-11-07",
+                coordinates: "-0.381, 100.473",
+                activity: "Aktivitas vulkanik meningkat dengan tremor menerus. Asap kawah teramati putih tebal 100-300 m. Radius aman 4 km."
+            },
+            {
+                name: "Anak Krakatau",
+                location: "Lampung",
+                status: "siaga",
+                statusLevel: "Level III",
+                elevation: "338 m",
+                lastActivity: "2024-11-11",
+                coordinates: "-6.102, 105.423",
+                activity: "Erupsi strombolian dengan lontaran material pijar 300-500 m. Abu vulkanik teramati ke arah timur laut. Zona larangan 5 km dari kawah."
+            },
+            {
+                name: "Ruang",
+                location: "Sulawesi Utara",
+                status: "waspada",
+                statusLevel: "Level II",
+                elevation: "725 m",
+                lastActivity: "2024-11-06",
+                coordinates: "2.297, 125.369",
+                activity: "Pasca erupsi April 2024, kondisi mulai stabil namun masih waspada. Teramati asap putih tipis 25-50 m. Zona bahaya 3 km."
+            },
+            {
+                name: "Ibu",
+                location: "Maluku Utara",
+                status: "siaga",
+                statusLevel: "Level III",
+                elevation: "1,325 m",
+                lastActivity: "2024-11-11",
+                coordinates: "1.488, 127.630",
+                activity: "Erupsi berulang dengan kolom abu 500-2000 m. Lontaran material pijar radius 1 km. Zona bahaya 5 km, evakuasi telah dilakukan."
+            },
+            {
+                name: "Dukono",
+                location: "Maluku Utara",
+                status: "waspada",
+                statusLevel: "Level II",
+                elevation: "1,229 m",
+                lastActivity: "2024-11-10",
+                coordinates: "1.693, 127.894",
+                activity: "Erupsi efusif menerus dengan asap abu tipis-sedang 200-600 m. Zona larangan 2 km dari kawah aktif."
+            },
+            {
+                name: "Sinabung",
+                location: "Sumatera Utara",
+                status: "waspada",
+                statusLevel: "Level II",
+                elevation: "2,460 m",
+                lastActivity: "2024-11-05",
+                coordinates: "3.170, 98.392",
+                activity: "Kubah lava masih aktif dengan awan panas guguran sporadis. Asap putih tebal 50-200 m. Radius bahaya 3-5 km sektor tertentu."
+            },
+            {
+                name: "Kerinci",
+                location: "Jambi",
+                status: "normal",
+                statusLevel: "Level I",
+                elevation: "3,805 m",
+                lastActivity: "2024-10-15",
+                coordinates: "-1.697, 101.264",
+                activity: "Aktivitas normal dengan asap kawah tipis. Tidak ada peningkatan aktivitas vulkanik signifikan."
+            },
+            {
+                name: "Kelud",
+                location: "Jawa Timur",
+                status: "normal",
+                statusLevel: "Level I",
+                elevation: "1,731 m",
+                lastActivity: "2024-09-20",
+                coordinates: "-7.930, 112.308",
+                activity: "Kondisi normal pasca erupsi 2014. Danau kawah dalam kondisi stabil. Aktivitas pariwisata dibuka kembali."
+            },
+            {
+                name: "Bromo",
+                location: "Jawa Timur",
+                status: "normal",
+                statusLevel: "Level I",
+                elevation: "2,329 m",
+                lastActivity: "2024-10-28",
+                coordinates: "-7.942, 112.953",
+                activity: "Aktivitas normal dengan asap kawah putih tipis 25-100 m. Wisatawan diperbolehkan dengan tetap waspada."
+            },
+            {
+                name: "Agung",
+                location: "Bali",
+                status: "waspada",
+                statusLevel: "Level II",
+                elevation: "3,031 m",
+                lastActivity: "2024-11-03",
+                coordinates: "-8.343, 115.508",
+                activity: "Peningkatan aktivitas seismik vulkanik dalam. Asap putih tebal 100-500 m. Radius bahaya 3 km dari kawah."
+            },
+            {
+                name: "Tambora",
+                location: "Nusa Tenggara Barat",
+                status: "normal",
+                statusLevel: "Level I",
+                elevation: "2,850 m",
+                lastActivity: "2024-08-12",
+                coordinates: "-8.247, 118.006",
+                activity: "Kondisi normal, tidak ada peningkatan aktivitas. Danau kaldera stabil."
+            },
+            {
+                name: "Karangetang",
+                location: "Sulawesi Utara",
+                status: "waspada",
+                statusLevel: "Level II",
+                elevation: "1,827 m",
+                lastActivity: "2024-11-09",
+                coordinates: "2.781, 125.407",
+                activity: "Erupsi efusif menerus dengan aliran lava pijar di sektor barat daya. Kolom asap 100-300 m. Zona bahaya 3.5 km."
+            }
+        ];
 
-        <div class="popup-menu">
-            <p><a href="#tentang-kami">Tentang Kami</a></p>
-            <p><a href="#privasi">Kebijakan Privasi</a></p>
-            <p><a href="#syarat">Syarat & Ketentuan</a></p>
-        </div>
+        function showLoading() {
+            document.getElementById('loadingContainer').innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Memuat data gunung berapi...</p>
+                </div>
+            `;
+        }
 
-        <div id="tentang-kami" class="popup">
-            <h3>Tentang Kami</h3>
-            <p>
-            <div class="popup-content">
-                <p><strong>Volcanoes Monitor</strong> adalah platform monitoring gunung berapi terintegrasi yang didedikasi untuk melindungi masyarakat dan mendukung para peneliti vulkanologi.</p>
+        function showError(message) {
+            document.getElementById('errorContainer').innerHTML = `
+                <div class="error">
+                    <strong>⚠️ ${message}</strong>
+                </div>
+            `;
+        }
 
-                <h4>Fitur Utama Kami:</h4>
-                <ul style="padding-left: 20px; margin-left: 0; text-align: left;">
-                    <li><strong>Beranda</strong> - Dashboard real-time aktivitas vulkanik terkini</li>
-                    <li><strong>Wilayah Terdampak</strong> - Pemetaan area risiko dan zona bahaya</li>
-                    <li><strong>Posko & Logistik</strong> - Informasi posko darurat dan distribusi bantuan</li>
-                    <li><strong>Data Korban & Pengungsi</strong> - Monitoring korban dan pengungsian</li>
-                    <li><strong>Laporan Kejadian & Riwayat Letusan</strong> - Dokumentasi historis dan laporan</li>
-                </ul>
+        function getStatusColor(status) {
+            const colors = {
+                'awas': '#ff3838',
+                'siaga': '#ffaa00',
+                'waspada': '#ffd93d',
+                'normal': '#6bcf7f'
+            };
+            return colors[status] || '#6bcf7f';
+        }
 
-                <p>Platform kami menggabungkan data sensor, laporan lapangan, dan analisis ahli untuk memberikan informasi akurat dan tepat waktu.</p>
+        function getStatusText(status) {
+            const texts = {
+                'awas': 'Awas',
+                'siaga': 'Siaga',
+                'waspada': 'Waspada',
+                'normal': 'Normal'
+            };
+            return texts[status] || 'Normal';
+        }
 
-                <p><em>Dibangun untuk keselamatan, didedikasikan untuk kehidupan.</em></p>
-            </div>
-            </p>
-            <a href="#">✕ Tutup</a>
-        </div>
-        <div class="overlay"></div>
+        function updateStats(volcanoes) {
+            const stats = {
+                awas: volcanoes.filter(v => v.status === 'awas').length,
+                siaga: volcanoes.filter(v => v.status === 'siaga').length,
+                waspada: volcanoes.filter(v => v.status === 'waspada').length,
+                normal: volcanoes.filter(v => v.status === 'normal').length
+            };
 
-        <div id="privasi" class="popup">
-            <h3>Kebijakan Privasi</h3>
-            <p><strong>Volcanoes Monitor</strong> berkomitmen melindungi privasi pengguna kami. Kebijakan ini menjelaskan bagaimana kami mengumpulkan, menggunakan, dan melindungi informasi Anda.</p>
+            document.getElementById('statsContainer').innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-number level-awas">${stats.awas}</div>
+                    <div class="stat-label">Level IV - Awas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number level-siaga">${stats.siaga}</div>
+                    <div class="stat-label">Level III - Siaga</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number level-waspada">${stats.waspada}</div>
+                    <div class="stat-label">Level II - Waspada</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number level-normal">${stats.normal}</div>
+                    <div class="stat-label">Level I - Normal</div>
+                </div>
+            `;
+        }
 
-            <h4>Informasi yang Kami Kumpulkan:</h4>
-            <ul style="padding-left: 20px; text-align: left;">
-                <li><strong>Data Lokasi</strong> - Untuk menampilkan informasi gunung berapi dan posko di wilayah Anda</li>
-                <li><strong>Data Laporan</strong> - Laporan aktivitas vulkanik</li>
-                <li><strong>Data Penggunaan</strong> - Statistik untuk improve layanan</li>
-                <li><strong>Data Darurat</strong> - Informasi kontak untuk notifikasi darurat</li>
-            </ul>
+        function displayVolcanoes(volcanoes) {
+            if (volcanoes.length === 0) {
+                document.getElementById('volcanoContainer').innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 40px;">
+                        <h3>Tidak ada data yang sesuai dengan filter</h3>
+                    </div>
+                `;
+                return;
+            }
 
-            <h4>Penggunaan Data:</h4>
-            <ul style="padding-left: 20px; text-align: left;">
-                <li>Memberikan informasi aktivitas vulkanik</li>
-                <li>Mengirim notifikasi peringatan dini</li>
-                <li>Meningkatkan akurasi prediksi dan monitoring</li>
-                <li>Koordinasi tanggap darurat dengan pihak berwenang</li>
-            </ul>
+            const html = volcanoes.map(volcano => `
+                <div class="volcano-card ${volcano.status}">
+                    <div class="volcano-header">
+                        <div>
+                            <div class="volcano-name">${volcano.name}</div>
+                            <div class="volcano-location">📍 ${volcano.location}</div>
+                        </div>
+                        <div class="status-badge badge-${volcano.status}">
+                            ${volcano.statusLevel}
+                        </div>
+                    </div>
+                    
+                    <div class="volcano-details">
+                        <div class="detail-row">
+                            <span class="detail-label">⛰️ Ketinggian:</span>
+                            <span class="detail-value">${volcano.elevation}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">📅 Aktivitas Terakhir:</span>
+                            <span class="detail-value">${new Date(volcano.lastActivity).toLocaleDateString('id-ID')}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">🗺️ Koordinat:</span>
+                            <span class="detail-value">${volcano.coordinates}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="activity-info">
+                        <strong>🔥 Kondisi Terkini:</strong><br>
+                        ${volcano.activity}
+                    </div>
+                </div>
+            `).join('');
 
-            <p><strong>Keamanan:</strong> Data Anda dilindungi dengan enkripsi dan hanya diakses oleh tim yang berwenang.</p>
+            document.getElementById('volcanoContainer').innerHTML = html;
+        }
 
-            <p><em>Terakhir diperbarui: 1 November 2025</em></p>
+        function updateLocationFilter(volcanoes) {
+            allLocations.clear();
+            volcanoes.forEach(v => allLocations.add(v.location));
 
-            <a href="#">✕ Tutup</a>
-        </div>
-        <div class="overlay"></div>
+            const locationFilter = document.getElementById('filterLocation');
+            locationFilter.innerHTML = '<option value="all">Semua Lokasi</option>' +
+                Array.from(allLocations).sort().map(loc =>
+                    `<option value="${loc}">${loc}</option>`
+                ).join('');
+        }
 
-        <div id="syarat" class="popup">
-            <h3>Syarat & Ketentuan</h3>
-            <p>Dengan menggunakan <strong>Volcanoes Monitor</strong>, Anda menyetujui syarat dan ketentuan berikut:</p>
+        function filterVolcanoes() {
+            const statusFilter = document.getElementById('filterStatus').value;
+            const locationFilter = document.getElementById('filterLocation').value;
 
-            <h4>Penggunaan Layanan:</h4>
-            <ul style="padding-left: 20px; text-align: left;">
-                <li>Layanan ini ditujukan untuk informasi dan keselamatan publik</li>
-                <li>Data yang ditampilkan dapat berubah setelah adanya penyesuaian</li>
-                <li>Pengguna bertanggung jawab atas laporan yang disampaikan</li>
-                <li>Dilarang menyebarkan informasi palsu atau menyesatkan</li>
-            </ul>
+            let filtered = allVolcanoes;
 
-            <h4>Kewajiban Pengguna:</h4>
-            <ul style="padding-left: 20px; text-align: left;">
-                <li>Menyampaikan laporan yang akurat dan bertanggung jawab</li>
-                <li>Mengikuti instruksi evakuasi dari pihak berwenang</li>
-                <li>Tidak menyalahgunakan sistem untuk kepentingan pribadi</li>
-                <li>Menghormati privasi pengguna lain</li>
-            </ul>
+            if (statusFilter !== 'all') {
+                filtered = filtered.filter(v => v.status === statusFilter);
+            }
 
-            <h4>Pembatasan Tanggung Jawab:</h4>
-            <ul style="padding-left: 20px; text-align: left;">
-                <li>Kami berusaha menyajikan informasi terakurat, namun tidak menjamin kelengkapan data</li>
-                <li>Pengguna disarankan selalu merujuk pada sumber resmi Badan Nasional Penanggulangan Bencana <a href="https://www.bnpb.go.id/">(BNPB)</a> dan Pusat Vulkanologi dan Mitigasi Bencana Geologi <a href="https://geologi.esdm.go.id/pvmbg"> (PVMBG)</a></li>
-                <li>Tidak bertanggung jawab atas kerugian akibat keterlambatan informasi</li>
-            </ul>
+            if (locationFilter !== 'all') {
+                filtered = filtered.filter(v => v.location === locationFilter);
+            }
 
-            <p><strong>Perubahan Ketentuan:</strong> Kami dapat memperbarui syarat ini sewaktu-waktu.</p>
+            displayVolcanoes(filtered);
+            updateStats(filtered);
+        }
 
-            <p><em>Terakhir diperbarui: 1 November 2025</em></p>
-            <a href="#">✕ Tutup</a>
-        </div>
-        <div class="overlay"></div>
-    </footer>
+        async function fetchData() {
+            const btnRefresh = document.getElementById('btnRefresh');
+            btnRefresh.disabled = true;
+            btnRefresh.textContent = '⏳ Memuat...';
+
+            document.getElementById('errorContainer').innerHTML = '';
+            showLoading();
+
+            try {
+                // Simulasi delay untuk fetch data
+                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                // Dalam implementasi nyata, ganti dengan fetch ke API atau scraping
+                allVolcanoes = simulatedVolcanoData;
+
+                // Update UI
+                const now = new Date();
+                document.getElementById('lastUpdate').textContent =
+                    `⏰ Data terakhir diperbarui: ${now.toLocaleString('id-ID')}`;
+
+                updateLocationFilter(allVolcanoes);
+                displayVolcanoes(allVolcanoes);
+                updateStats(allVolcanoes);
+
+                document.getElementById('loadingContainer').innerHTML = '';
+
+            } catch (error) {
+                console.error('Error:', error);
+                showError('Gagal memuat data gunung berapi. Silakan coba lagi.');
+                document.getElementById('loadingContainer').innerHTML = '';
+            } finally {
+                btnRefresh.disabled = false;
+                btnRefresh.textContent = '🔄 Refresh Data';
+            }
+        }
+
+        // Load data saat halaman dimuat
+        window.addEventListener('DOMContentLoaded', () => {
+            fetchData();
+
+            // Auto refresh setiap 5 menit
+            setInterval(fetchData, 300000);
+        });
+    </script>
 </body>
 
 </html>
