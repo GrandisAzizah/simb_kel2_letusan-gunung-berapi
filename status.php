@@ -419,7 +419,7 @@ if (isset($_POST["cari"])) {
 <body>
 
     <!-- navbar -->
-    <nav class="d-flex">
+    <nav class="d-flex mb-3">
         <div class="container-fluid navbar-container">
             <div class="nav-left">
                 <!-- navbar icon -->
