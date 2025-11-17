@@ -2,7 +2,7 @@
 include 'koneksi.php';
 require 'function.php';
 
-$data = query("SELECT waktu_laporan, judul_laporan, detail_laporan, status_verifikasi FROM laporan");
+$data = query("SELECT waktu_laporan, judul_laporan, detail_laporan FROM laporan");
 
 if (isset($_POST["submit"])) {
     $data = cariLaporan($_POST["keywordLaporan"]);
@@ -17,10 +17,192 @@ if (isset($_POST["submit"])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Laporan Kejadian & Riwayat Letusan</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="template.css">
-    <link rel="stylesheet" href="poskoLaporanKejadian.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            padding: 40px 0;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            border-radius: 15px 15px 0 0 !important;
+            padding: 20px;
+            font-weight: 600;
+        }
+
+        .table {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .table thead {
+            background-color: #dc2626;
+            color: white;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .badge {
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        .alert {
+            border-radius: 10px;
+            border: none;
+        }
+
+        .stats-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .stats-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .stats-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #dc2626;
+        }
+
+        .stats-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        nav {
+            background-color: #dc2626;
+            padding: 1rem 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-brand {
+            color: white !important;
+            font-weight: 600;
+            font-size: 1.5rem;
+            text-decoration: none;
+        }
+
+        .nav-link {
+            color: white !important;
+            margin: 0 10px;
+            text-decoration: none;
+        }
+
+        .nav-link:hover {
+            color: #fee2e2 !important;
+        }
+
+        footer {
+            background-color: #1f2937;
+            color: white;
+            padding: 30px 0;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .judul-poppins {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            text-align: center;
+            margin: 60px 60px !important;
+            color: #333;
+        }
+
+        .btn-outline {
+            color: #dc3545 !important;
+            border-color: #dc3545 !important;
+        }
+
+        .btn-outline:hover {
+            color: #fff !important;
+            background-color: #dc3545 !important;
+            border-color: #dc3545 !important;
+        }
+
+        .btn-outline:focus {
+            box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25) !important;
+        }
+
+        .btn-outline:active {
+            color: #fff !important;
+            background-color: #dc3545 !important;
+            border-color: #dc3545 !important;
+        }
+
+        .form-control {
+            width: 300px;
+            border-color: #dc3545 !important;
+        }
+
+        .form-control:focus {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25) !important;
+        }
+
+        .time-cell,
+        .title-cell,
+        .detail-cell {
+            padding: 16px 12px;
+            vertical-align: middle;
+        }
+
+        .time-wrapper,
+        .title-wrapper,
+        .detail-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .time-icon,
+        .title-icon,
+        .detail-icon {
+            color: #dc2626;
+            width: 20px;
+        }
+    </style>
 </head>
 
 <body>
@@ -41,9 +223,9 @@ if (isset($_POST["submit"])) {
                         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                     </div>
                     <div class="offcanvas-body justify-content-start">
-                        <a href="">Beranda</a>
+                        <a href="mainpage.php">Beranda</a>
                         <a href="status.php">Cek Status Gunung</a>
-                        <a href="">Wilayah Terdampak</a>
+                        <a href="sebaran.php">Wilayah Terdampak</a>
                         <a href="dataPosko.php">Posko & Logistik</a>
                         <a href="">Data Korban & Pengungsi</a>
                         <a href="laporan.php">Laporan Kejadian & Riwayat Letusan</a>
@@ -67,40 +249,74 @@ if (isset($_POST["submit"])) {
         </div>
     </nav>
 
+    <!-- akhir navbar -->
+
     <h2 class="judul-poppins text-center mt-4 mb-4">Laporan Kejadian & Riwayat Letusan</h2>
 
-    <div class="container-fluid mb-3 mt-3 justify-content-center d-flex">
-        <form action="" method="POST" class="d-flex" role="search">
-            <input class="form-control me-2" type="search" name="keywordLaporan" placeholder="Cari Posko Terdekat" aria-label="Search" autofocus autocomplete="off" />
-            <button class="btn btn-outline" type="submit" name="submit">Search</button>
+    <div class="container-fluid mb-4 mt-3 justify-content-center d-flex">
+        <form action="" method="POST" class="d-flex search-form" role="search" style="max-width: 500px; width: 100%;">
+            <input class="form-control me-2 search-input" type="search" name="keywordLaporan" placeholder="Cari laporan kejadian..." aria-label="Search" autofocus autocomplete="off" />
+            <button class="btn btn-outline search-btn" type="submit" name="submit">
+                <i class="fas fa-search"></i> Search
+            </button>
         </form>
     </div>
 
     <div class="container-lg">
-        <table class="table table-bordered">
-            <thead class="table">
-                <tr>
-                    <th scope="col">Waktu Kejadian</th>
-                    <th scope="col">Judul Laporan</th>
-                    <th scope="col">Detail Laporan</th>
-                    <th scope="col">Status Verifikasi</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                <?php foreach ($data as $row) : ?>
-                    <tr>
-                        <td><?= $row["waktu_laporan"]; ?></td>
-                        <td><?= $row["judul_laporan"]; ?></td>
-                        <td><?= $row["detail_laporan"]; ?></td>
-                        <td><?= $row["status_verifikasi"]; ?></td>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0"><i class="fas fa-file-alt me-2"></i>Data Laporan Kejadian</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Waktu Laporan</th>
+                                <th>Judul Laporan</th>
+                                <th>Detail Laporan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (empty($data)): ?>
+                                <tr>
+                                    <td colspan="3" class="text-center text-muted py-4">
+                                        <i class="fas fa-inbox fa-2x mb-3"></i><br>
+                                        Belum ada data laporan
+                                    </td>
+                                </tr>
+                            <?php else: ?>
+                                <?php foreach ($data as $row) : ?>
+                                    <tr class="table-row">
+                                        <td class="time-cell">
+                                            <div class="time-wrapper">
+                                                <i class="fas fa-clock time-icon"></i>
+                                                <span class="time-text"><?= $row["waktu_laporan"]; ?></span>
+                                            </div>
+                                        </td>
+                                        <td class="title-cell">
+                                            <div class="title-wrapper">
+                                                <i class="fas fa-file-alt title-icon"></i>
+                                                <strong class="title-text"><?= $row["judul_laporan"]; ?></strong>
+                                            </div>
+                                        </td>
+                                        <td class="detail-cell">
+                                            <div class="detail-wrapper">
+                                                <i class="fas fa-info-circle detail-icon"></i>
+                                                <span class="detail-text"><?= $row["detail_laporan"]; ?></span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 
+    <!-- footer -->
     <footer>
         <p class="fw-bolder">Volcanoes Monitor</p>
         <p class="fw-bolder">Kontak Darurat</p>
@@ -207,6 +423,8 @@ if (isset($_POST["submit"])) {
         </div>
         <div class="overlay"></div>
     </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
