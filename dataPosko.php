@@ -166,7 +166,7 @@
             <div class="nav-menu">
                 <ul class="nav justify-content-end">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Beranda</a>
+                        <a class="nav-link active" aria-current="page" href="mainpage.php">Beranda</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="kontak.php">Kontak</a>
@@ -406,3 +406,4 @@
 
 
 </html>
+
