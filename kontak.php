@@ -29,6 +29,7 @@
                     </div>
                     <div class="offcanvas-body justify-content-start">
                         <a href="mainpage.php">Beranda</a>
+                        <a href="info_gunung.php">Informasi Gunung</a>
                         <a href="status.php">Cek Status Gunung</a>
                         <a href="sebaran.php">Wilayah Terdampak</a>
                         <a href="dataPosko.php">Posko & Logistik</a>
@@ -303,3 +304,4 @@
 
 
 </html>
+
