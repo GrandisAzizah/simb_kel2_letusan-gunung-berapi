@@ -151,6 +151,7 @@
                     </div>
                      <div class="offcanvas-body">
                         <a href="mainpage.php" class="offcanvas-link">Beranda</a>
+                        <a href="info_gunung.php">Informasi Gunung</a>
                         <a href="status.php" class="offcanvas-link">Cek Status Gunung</a>
                         <a href="sebaran.php" class="offcanvas-link">Wilayah Terdampak</a>
                         <a href="dataPosko.php" class="offcanvas-link">Posko & Logistik</a>
@@ -406,4 +407,5 @@
 
 
 </html>
+
 
