@@ -227,7 +227,7 @@
                         </div>
                         <div class="offcanvas-body">
                             <a class="nav-link px-2" href="#">Beranda</a>
-                            <a class="nav-link px-2" href="#">Kontak</a>
+                            <a class="nav-link px-2" href="kontak.php">Kontak</a>
                         </div>
                     </div>
                 </div>
