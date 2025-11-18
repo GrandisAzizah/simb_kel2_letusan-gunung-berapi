@@ -39,7 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_SESSION['jabatan'] = $petugas['jabatan'];
                 
                 // Redirect ke dashboard
-                header("Location: dashboard.php");
+                header("Location: mainpage.php");
                 exit();
             } else {
                 $error = "Password salah!";
@@ -200,3 +200,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </body>
 
 </html>
+
