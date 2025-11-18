@@ -497,7 +497,7 @@ if (!$result) {
                         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                     </div>
                     <div class="offcanvas-body justify-content-start">
-                        <a href="index.php">Beranda</a>
+                        <a href="mainpage.php">Beranda</a>
                         <a href="status.php">Cek Status Gunung</a>
                         <a href="sebaran.php">Wilayah Terdampak</a>
                         <a href="dataPosko.php">Posko & Logistik</a>
@@ -513,7 +513,7 @@ if (!$result) {
             <div class="nav-menu">
                 <ul class="nav justify-content-end">
                     <li class="nav-item">
-                        <a class="nav-link active" href="#">Beranda</a>
+                        <a class="nav-link active" href="mainpage.php">Beranda</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="kontak.php">Kontak</a>
