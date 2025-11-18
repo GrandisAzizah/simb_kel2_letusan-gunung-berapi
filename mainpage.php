@@ -138,7 +138,8 @@
             transform: translateY(-3px);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
         }
-        
+
+
         .content-section {
             padding: 60px 0;
         }
@@ -209,42 +210,59 @@
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg">
-        <div class="container">
-            <div class="navbar-container">
-                <div class="d-flex align-items-center">
-                    
-                    <a class="navbar-brand text-white fw-bold" href="#">Volcanoes Monitor</a>
-                </div>
-                <div class="nav-menu">
-                    <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
-                        <i class="fas fa-bars text-white"></i>
-                    </button>
-                    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
-                        <div class="offcanvas-header">
-                            <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menu</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-                        </div>
-                        <div class="offcanvas-body">
-                            <a class="nav-link px-2" href="#">Beranda</a>
-                            <a class="nav-link px-2" href="kontak.php">Kontak</a>
-                        </div>
+
+    <nav class="d-flex">
+        <div class="container-fluid navbar-container">
+            <div class="nav-left">
+                <!-- Sidebar icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                    class="bi bi-justify" viewBox="0 0 16 16" data-bs-toggle="offcanvas"
+                    data-bs-target="#offcanvasSidebar">
+                    <path fill-rule="evenodd"
+                        d="M2 12.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5m0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5m0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5m0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5" />
+                </svg>
+
+                <div class="offcanvas offcanvas-start" id="offcanvasSidebar" data-bs-scroll="true"
+                    data-bs-backdrop="false" tabindex="-1">
+                    <div class="offcanvas-header">
+                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body justify-content-start">
+                        <a href="index.php">Beranda</a>
+                        <a href="status.php">Cek Status Gunung</a>
+                        <a href="sebaran.php">Wilayah Terdampak</a>
+                        <a href="dataPosko.php">Posko & Logistik</a>
+                        <a href="dataKorban.php">Data Korban & Pengungsi</a>
+                        <a href="laporan.php">Laporan Kejadian & Riwayat Letusan</a>
                     </div>
                 </div>
+
+                <a class="navbar-brand" href="#">Volcanoes Monitor</a>
+            </div>
+
+            <div class="nav-menu">
+                <ul class="nav justify-content-end">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Beranda</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="kontak.php">Kontak</a>
+                    </li>
+                </ul>
             </div>
         </div>
     </nav>
-
 
     <section class="hero-section">
         <div class="container">
             <div class="hero-content">
                 <h1>Pemantauan Gunung Berapi Indonesia</h1>
                 <p>Sistem informasi terintegrasi untuk memantau aktivitas gunung berapi di seluruh Indonesia</p>
-                <a href="nanti ini kemana?" class="btn-hero">Learn More</a>
+                <a href="#content" class="btn-hero">Pelajari Lebih Lanjut</a>
             </div>
         </div>
     </section>
+
     <section class="content-section" id="content">
         <div class="container">
             <div class="row">
@@ -280,12 +298,12 @@
                 </div>
                 <div class="col-md-3">
                     <h5>Kontak</h5>
-                    <p>Email: </p>
+                    <p>Email: kel2@volcanoesmonitor.id</p>
                     <p>Telepon: 0812345678</p>
                 </div>
             </div>
             <hr class="my-4 bg-light">
-            <p>&copy; ada udang dibalik batu batunya hilang dosennya datang</p>
+            <p>&copy; 2025 Volcanoes Monitor - Sistem Pemantauan Gunung Berapi Indonesia</p>
         </div>
     </footer>
 
