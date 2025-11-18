@@ -47,7 +47,7 @@
 
         .nav-link {
             color: white !important;
-            margin-bottom: 22px;
+            margin-bottom: 0px;
         }
 
         .offcanvas {
