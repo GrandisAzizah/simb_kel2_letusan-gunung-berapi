@@ -4,7 +4,7 @@ require_once 'config.php';
 
 // Jika sudah login, redirect ke dashboard
 if (isset($_SESSION['user_id'])) {
-    header("Location: status_gunung.html");
+    header("Location: mainpage.php");
     exit();
 }
 
@@ -198,4 +198,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </div>
 </body>
+
 </html>
