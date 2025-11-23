@@ -1,4 +1,5 @@
 <?php
+session_start();
 include 'koneksi.php';
 require 'function.php';
 
@@ -224,12 +225,22 @@ if (isset($_POST["submit"])) {
                     </div>
                     <div class="offcanvas-body justify-content-start">
                         <a href="mainpage.php">Beranda</a>
-                        <a href="info_gunung.php">Informasi Gunung</a>
                         <a href="status.php">Cek Status Gunung</a>
-                        <a href="sebaran.php">Wilayah Terdampak</a>
+                        <a href="info_gunung.php">Informasi Status Gunung Berapi</a>
+                        <a href="sebaran.php">Sebaran Wilayah Terdampak</a>
                         <a href="dataPosko.php">Posko & Logistik</a>
                         <a href="">Data Korban & Pengungsi</a>
                         <a href="laporan.php">Laporan Kejadian & Riwayat Letusan</a>
+                        <div class="d-grid col-12">
+                            <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true): ?>
+                                <!-- sudah login -->
+                                <button href="logout.php" class="btn btn-danger mt-1">Logout</button>
+                            <?php else: ?>
+                                <!-- belum login -->
+                                <button href="login.php" class="btn btn-danger mt-3">Login</button>
+                                <button href="registrasi.php" class="btn btn-danger mt-3">Registrasi</button>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 </div>
 
@@ -240,7 +251,7 @@ if (isset($_POST["submit"])) {
             <div class="nav-menu">
                 <ul class="nav justify-content-end">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="mainpage.php">Beranda</a>
+                        <a class="nav-link active" aria-current="page" href="#">Beranda</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="kontak.php">Kontak</a>
@@ -429,5 +440,3 @@ if (isset($_POST["submit"])) {
 </body>
 
 </html>
-
-
