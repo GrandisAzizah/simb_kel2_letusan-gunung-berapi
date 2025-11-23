@@ -1,3 +1,7 @@
+<?php
+session_start();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -28,15 +32,21 @@
                     </div>
                     <div class="offcanvas-body justify-content-start">
                         <a href="mainpage.php">Beranda</a>
-                        <a href="status.php">Cek Status Gunung</a>
-                        <a href="info_gunung.php">Informasi Status Gunung Berapi</a>
+                        <a href="info_gunung.php">Cek Status Gunung</a>
+                        <a href="status.php">Informasi Status Gunung Berapi</a>
                         <a href="sebaran.php">Sebaran Wilayah Terdampak</a>
                         <a href="dataPosko.php">Posko & Logistik</a>
                         <a href="">Data Korban & Pengungsi</a>
                         <a href="laporan.php">Laporan Kejadian & Riwayat Letusan</a>
                         <div class="d-grid col-12">
-                            <button class="btn btn-danger mt-3" type="button" href="login.php">Login</button>
-                            <button class="btn btn-danger mt-3" type="button" href="registrasi.php">Registrasi</button>
+                            <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true): ?>
+                                <!-- sudah login -->
+                                <a href="logout.php" class="btn btn-danger mt-1">Logout</a>
+                            <?php else: ?>
+                                <!-- belum login -->
+                                <a href="login.php" class="btn btn-danger mt-3">Login</a>
+                                <a href="registrasi.php" class="btn btn-danger mt-3">Registrasi</a>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -167,4 +177,3 @@
 </body>
 
 </html>
-
