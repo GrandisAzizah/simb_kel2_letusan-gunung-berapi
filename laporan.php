@@ -234,6 +234,9 @@ if (isset($_POST["submit"])) {
                         <div class="d-grid col-12">
                             <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true): ?>
                                 <!-- sudah login -->
+                                <a href="input_dataposko.php">Input Data Posko</a>
+                                <a href="input_laporan.php">Input Laporan</a>
+                                <a href="input_sebaran.php">Input Sebaran</a>
                                 <button href="logout.php" class="btn btn-danger mt-1">Logout</button>
                             <?php else: ?>
                                 <!-- belum login -->
@@ -440,3 +443,4 @@ if (isset($_POST["submit"])) {
 </body>
 
 </html>
+
