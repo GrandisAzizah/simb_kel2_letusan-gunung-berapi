@@ -3,7 +3,7 @@ session_start();
 include 'koneksi.php';
 require 'function.php';
 
-$data = query("SELECT waktu_laporan, judul_laporan, detail_laporan FROM laporan");
+$data = query("SELECT waktu_laporan, judul_laporan, detail_laporan FROM laporan WHERE status_verifikasi = 'diverifikasi' ORDER BY waktu_laporan DESC");
 
 if (isset($_POST["submit"])) {
     $data = cariLaporan($_POST["keywordLaporan"]);
@@ -254,7 +254,7 @@ if (isset($_POST["submit"])) {
             <div class="nav-menu">
                 <ul class="nav justify-content-end">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="mainpage.php">Beranda</a>
+                        <a class="nav-link active" aria-current="page" href="#">Beranda</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="kontak.php">Kontak</a>
@@ -443,5 +443,3 @@ if (isset($_POST["submit"])) {
 </body>
 
 </html>
-
-
