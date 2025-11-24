@@ -472,13 +472,13 @@ include 'koneksi.php';
                 </div>
 
                 <!-- Brand -->
-                <a class="navbar-brand" href="#">Volcanoes Monitor</a>
+                <a class="navbar-brand" href="mainpage.php">Volcanoes Monitor</a>
             </div>
 
             <div class="nav-menu">
                 <ul class="nav justify-content-end">
                     <li class="nav-item">
-                        <a class="nav-link active" href="#">Beranda</a>
+                        <a class="nav-link active" href="mainpage.php">Beranda</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="kontak.php">Kontak</a>
