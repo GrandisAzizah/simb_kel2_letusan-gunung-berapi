@@ -32,6 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Verifikasi password (asumsi password disimpan dalam bentuk plain text)
             if ($password === $petugas['password']) {
                 // Login berhasil
+                $_SESSION['logged_in'] = true;
                 $_SESSION['user_id'] = $petugas['id_petugas'];
                 $_SESSION['username'] = $petugas['username'];
                 $_SESSION['nama_petugas'] = $petugas['nama_petugas'];
@@ -199,5 +200,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </body>
 
 </html>
+
 
 
