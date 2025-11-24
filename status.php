@@ -448,11 +448,11 @@ if (isset($_POST["cari"])) {
                                 <a href="input_dataposko.php">Input Data Posko</a>
                                 <a href="input_laporan.php">Input Laporan</a>
                                 <a href="input_sebaran.php">Input Sebaran</a>
-                                <button href="logout.php" class="btn btn-danger mt-1">Logout</button>
+                               <a href="logout.php" class="btn btn-danger mt-1 text-white">Logout</a>
                             <?php else: ?>
                                 <!-- belum login -->
-                                <button href="login.php" class="btn btn-danger mt-3">Login</button>
-                                <button href="registrasi.php" class="btn btn-danger mt-3">Registrasi</button>
+                                <a href="login.php" class="btn btn-danger mt-3 text-white">Login</a>
+                                <a href="registrasi.php" class="btn btn-danger mt-3 text-white">Registrasi</a>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -890,5 +890,6 @@ if (isset($_POST["cari"])) {
 </body>
 
 </html>
+
 
 
