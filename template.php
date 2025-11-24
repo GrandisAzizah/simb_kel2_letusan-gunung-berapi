@@ -41,11 +41,11 @@ session_start();
                         <div class="d-grid col-12">
                             <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true): ?>
                                 <!-- sudah login -->
-                                <a href="logout.php" class="btn btn-danger mt-1">Logout</a>
+                                <a href="logout.php" class="btn btn-danger mt-1 text-white">Logout</a>
                             <?php else: ?>
                                 <!-- belum login -->
-                                <a href="login.php" class="btn btn-danger mt-3">Login</a>
-                                <a href="registrasi.php" class="btn btn-danger mt-3">Registrasi</a>
+                                <a href="login.php" class="btn btn-danger mt-3 text-white">Login</a>
+                                <a href="registrasi.php" class="btn btn-danger mt-3 text-white">Registrasi</a>
                             <?php endif; ?>
                         </div>
                     </div>
