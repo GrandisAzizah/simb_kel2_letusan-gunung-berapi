@@ -229,7 +229,7 @@ if (isset($_POST["submit"])) {
                         <a href="info_gunung.php">Informasi Status Gunung Berapi</a>
                         <a href="sebaran.php">Sebaran Wilayah Terdampak</a>
                         <a href="dataPosko.php">Posko & Logistik</a>
-                        <a href="">Data Korban & Pengungsi</a>
+                        <a href="dataKorban.php">Data Korban & Pengungsi</a>
                         <a href="laporan.php">Laporan Kejadian & Riwayat Letusan</a>
                         <div class="d-grid col-12">
                             <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true): ?>
@@ -443,5 +443,6 @@ if (isset($_POST["submit"])) {
 </body>
 
 </html>
+
 
 
