@@ -292,6 +292,62 @@
             </div>
         </div>
     </header>
+
+        <!-- navbar -->
+    <nav class="d-flex">
+        <div class="container-fluid navbar-container">
+            <div class="nav-left">
+                <!-- navbar icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-justify" viewBox="0 0 16 16" data-bs-toggle="offcanvas"
+                    data-bs-target="#offcanvasSidebar">
+                    <path fill-rule="evenodd" d="M2 12.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5m0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5m0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5m0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5" />
+                </svg>
+
+                <div class=" offcanvas offcanvas-start" id="offcanvasSidebar" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+                    <div class="offcanvas-header">
+                        <h5 class="offcanvas-title" id="offcanvasScrollingLabel"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body justify-content-start">
+                        <a href="mainpage.php">Beranda</a>
+                        <a href="status.php">Cek Status Gunung</a>
+                        <a href="info_gunung.php">Informasi Status Gunung Berapi</a>
+                        <a href="sebaran.php">Sebaran Wilayah Terdampak</a>
+                        <a href="dataPosko.php">Posko & Logistik</a>
+                        <a href="">Data Korban & Pengungsi</a>
+                        <a href="laporan.php">Laporan Kejadian & Riwayat Letusan</a>
+                        <div class="d-grid col-12">
+                            <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true): ?>
+                                <!-- sudah login -->
+                                <a href="input_dataposko.php">Input Data Posko</a>
+                                <a href="input_laporan.php">Input Laporan</a>
+                                <a href="input_sebaran.php">Input Sebaran</a>
+                                <a href="logout.php" class="btn btn-danger mt-1 text-white">Logout</a>
+                            <?php else: ?>
+                                <!-- belum login -->
+                                <a href="login.php" class="btn btn-danger mt-3 text-white">Login</a>
+                                <a href="registrasi.php" class="btn btn-danger mt-3 text-white">Registrasi</a>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- navbar brand and links -->
+                <a class="navbar-brand" href="#">Volcanoes Monitor</a>
+            </div>
+            <!-- navbar menu -->
+            <div class="nav-menu">
+                <ul class="nav justify-content-end">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="mainpage.php">Beranda</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="kontak.php">Kontak</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
     
     <main class="container" role="main">
         <section class="dashboard">
@@ -439,3 +495,4 @@
     </script>
 </body>
 </html>
+
