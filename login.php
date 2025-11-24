@@ -187,12 +187,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <input type="password" id="password" name="password" required>
                 </div>
                 
-                <!-- PERBAIKAN: Gunakan button, bukan anchor tag -->
+          
                 <button type="submit" class="submit-btn">Login</button>
             </form>
             
             <div class="link-container">
-                <!-- PERBAIKAN: Typo "Bekim" menjadi "Belum" -->
                 <p>Belum punya akun? <a href="registrasi.php">Daftar di sini</a></p>
             </div>
         </div>
@@ -200,4 +199,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </body>
 
 </html>
+
 
