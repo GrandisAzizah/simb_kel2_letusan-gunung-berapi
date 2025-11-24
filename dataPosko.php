@@ -178,13 +178,13 @@ session_start();
                 </div>
 
                 <!-- navbar brand and links -->
-                <a class="navbar-brand" href="#">Volcanoes Monitor</a>
+                <a class="navbar-brand" href="mainpage.php">Volcanoes Monitor</a>
             </div>
             <!-- navbar menu -->
             <div class="nav-menu">
                 <ul class="nav justify-content-end">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Beranda</a>
+                        <a class="nav-link active" aria-current="page" href="mainpage.php">Beranda</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="kontak.php">Kontak</a>
@@ -423,4 +423,5 @@ session_start();
 </body>
 
 </html>
+
 
