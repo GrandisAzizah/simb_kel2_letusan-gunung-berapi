@@ -34,11 +34,11 @@ session_start();
                         <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true): ?>
                             <!-- sudah login -->
                             <a href="mainpage.php">Beranda</a>
-                            <a href="info_gunung.php">Cek Status Gunung</a>
-                            <a href="status.php">Informasi Status Gunung Berapi</a>
+                            <a href="status.php">Cek Status Gunung</a>
+                            <a href="info_gunung.php">Informasi Status Gunung Berapi</a>
                             <a href="sebaran.php">Sebaran Wilayah Terdampak</a>
                             <a href="dataPosko.php">Posko & Logistik</a>
-                            <a href="">Data Korban & Pengungsi</a>
+                            <a href="dataKorban.php">Data Korban & Pengungsi</a>
                             <a href="laporan.php">Laporan Kejadian & Riwayat Letusan</a>
                             <a href="input_sebaran.php">Input Sebaran Wilayah Terdampak</a>
                             <a href="input_dataposko.php">Input Posko & Logistik</a>
@@ -47,8 +47,8 @@ session_start();
                         <?php else: ?>
                             <!-- belum login -->
                             <a href="mainpage.php">Beranda</a>
-                            <a href="info_gunung.php">Cek Status Gunung</a>
-                            <a href="status.php">Informasi Status Gunung Berapi</a>
+                            <a href="status.php">Cek Status Gunung</a>
+                            <a href="info_gunung.php">Informasi Status Gunung Berapi</a>
                             <a href="sebaran.php">Sebaran Wilayah Terdampak</a>
                             <a href="dataPosko.php">Posko & Logistik</a>
                             <a href="">Data Korban & Pengungsi</a>
@@ -186,4 +186,5 @@ session_start();
 </body>
 
 </html>
+
 
