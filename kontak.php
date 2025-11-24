@@ -56,7 +56,7 @@ session_start();
                 </div>
 
                 <!-- navbar brand and links -->
-                <a class="navbar-brand" href="#">Volcanoes Monitor</a>
+                <a class="navbar-brand" href="mainpage.php">Volcanoes Monitor</a>
             </div>
             <!-- navbar menu -->
             <div class="nav-menu">
@@ -321,6 +321,7 @@ session_start();
 
 
 </html>
+
 
 
 
