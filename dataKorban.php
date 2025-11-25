@@ -1,5 +1,10 @@
+<?php
+session_start();
+?>
+
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,10 +13,15 @@
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="template.css">
+
     <style>
         :root {
-            --primary-color: #2c3e50; 
+            --primary-color: #2c3e50;
             --secondary-color: #3498db;
             --danger-color: #e74c3c;
             --warning-color: #f39c12;
@@ -21,14 +31,14 @@
             --text-color: #333;
             --font-family: 'Roboto', sans-serif;
         }
-        
-        
+
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             background-color: var(--light-color);
             color: var(--text-color);
@@ -36,7 +46,7 @@
             font-family: var(--font-family);
             min-height: 100vh;
         }
-        
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -51,27 +61,27 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             margin-bottom: 30px;
         }
-        
+
         .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap; 
+            flex-wrap: wrap;
         }
-        
+
         .header-content h1 {
             font-size: 28px;
             font-weight: 700;
             margin-bottom: 0;
         }
-        
+
         .date-display {
             font-size: 14px;
             opacity: 0.9;
-            margin-top: 5px; 
+            margin-top: 5px;
         }
 
-        
+
         .section-title {
             font-size: 22px;
             font-weight: 700;
@@ -80,7 +90,7 @@
             border-bottom: 3px solid var(--secondary-color);
             padding-bottom: 10px;
         }
-        
+
         .data-section {
             background-color: white;
             border-radius: 10px;
@@ -89,14 +99,14 @@
             margin-bottom: 30px;
         }
 
-        
+
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 20px;
             margin-bottom: 30px;
         }
-        
+
         .stat-card {
             background-color: white;
             border-radius: 10px;
@@ -106,44 +116,56 @@
             transition: all 0.3s ease;
             border: 1px solid var(--light-color);
         }
-        
+
         .stat-card:hover {
             transform: translateY(-3px);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
         }
-        
+
         .stat-card h3 {
             font-size: 16px;
             margin-bottom: 10px;
             color: var(--dark-color);
             font-weight: 500;
         }
-        
+
         .stat-value {
             font-size: 36px;
             font-weight: 700;
             color: var(--primary-color);
             line-height: 1;
         }
-        
-        .stat-card.casualties .stat-value { color: var(--danger-color); }
-        .stat-card.injured .stat-value { color: var(--warning-color); }
-        .stat-card.refugees .stat-value { color: var(--secondary-color); }
-        .stat-card.villages .stat-value { color: var(--success-color); }
 
-        
+        .stat-card.casualties .stat-value {
+            color: var(--danger-color);
+        }
+
+        .stat-card.injured .stat-value {
+            color: var(--warning-color);
+        }
+
+        .stat-card.refugees .stat-value {
+            color: var(--secondary-color);
+        }
+
+        .stat-card.villages .stat-value {
+            color: var(--success-color);
+        }
+
+
         .data-table {
             width: 100%;
             border-collapse: collapse;
             table-layout: fixed;
         }
-        
-        .data-table th, .data-table td {
+
+        .data-table th,
+        .data-table td {
             padding: 15px;
             text-align: left;
             border-bottom: 1px solid #e0e0e0;
         }
-        
+
         .data-table th {
             background-color: var(--light-color);
             font-weight: 600;
@@ -151,25 +173,25 @@
             text-transform: uppercase;
             font-size: 14px;
         }
-        
+
         .data-table tbody tr:hover {
             background-color: #f9f9f9;
         }
 
-        
+
         .logistics-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
         }
-        
+
         .logistics-card {
             background-color: var(--light-color);
             border-radius: 8px;
             padding: 20px;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
         }
-        
+
         .logistics-card h3 {
             font-size: 18px;
             margin-bottom: 15px;
@@ -178,21 +200,22 @@
             padding-bottom: 8px;
             font-weight: 600;
         }
-        
+
         .needs-list {
             list-style-type: none;
         }
-        
+
         .needs-list li {
             padding: 10px 0;
-            border-bottom: 1px dashed #ccc; /* Changed to dashed border */
+            border-bottom: 1px dashed #ccc;
+            /* Changed to dashed border */
             font-size: 16px;
         }
-        
+
         .needs-list li:last-child {
             border-bottom: none;
         }
-        
+
         /*map - lum*/
         .map-placeholder {
             background-color: var(--light-color);
@@ -217,14 +240,14 @@
             border-top: 1px solid #ccc;
             background-color: white;
         }
-        
+
 
         @media (max-width: 768px) {
             .header-content {
                 flex-direction: column;
                 text-align: center;
             }
-            
+
             .header-content h1 {
                 font-size: 24px;
             }
@@ -232,34 +255,36 @@
             .date-display {
                 margin-top: 10px;
             }
-            
+
             .stats-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .stat-value {
                 font-size: 30px;
             }
-            
+
             .data-section {
                 padding: 20px;
             }
 
-            .data-table th, .data-table td {
+            .data-table th,
+            .data-table td {
                 padding: 10px;
                 display: block;
                 width: 100%;
                 text-align: center;
             }
 
-            .data-table th:first-child, .data-table td:first-child {
-                text-align: left; 
+            .data-table th:first-child,
+            .data-table td:first-child {
+                text-align: left;
             }
 
             .data-table thead {
                 display: none;
             }
-            
+
             .data-table tbody tr {
                 margin-bottom: 15px;
                 display: block;
@@ -283,17 +308,11 @@
         }
     </style>
 </head>
-<body>
-    <header class="header" role="banner">
-        <div class="container">
-            <div class="header-content">
-                <h1>Data Korban & Pengungsi <span aria-hidden="true"></span></h1>
-                <div class="date-display" id="current-date" aria-live="polite"></div>
-            </div>
-        </div>
-    </header>
 
-        <!-- navbar -->
+<body>
+
+
+    <!-- navbar -->
     <nav class="d-flex">
         <div class="container-fluid navbar-container">
             <div class="nav-left">
@@ -309,37 +328,38 @@
                         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                     </div>
                     <div class="offcanvas-body justify-content-start">
-                      <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true): ?>
-                            <!-- sudah login -->
-                            <a href="mainpage.php">Beranda</a>
-                            <a href="status.php">Cek Status Gunung</a>
-                            <a href="info_gunung.php">Informasi Status Gunung Berapi</a>
-                            <a href="sebaran.php">Sebaran Wilayah Terdampak</a>
-                            <a href="dataPosko.php">Posko & Logistik</a>
-                            <a href="dataKorban.php">Data Korban & Pengungsi</a>
-                            <a href="laporan.php">Laporan Kejadian & Riwayat Letusan</a>
-                            <a href="input_sebaran.php">Input Sebaran Wilayah Terdampak</a>
-                            <a href="input_dataposko.php">Input Posko & Logistik</a>
-                            <a href="input_laporan.php">Input Laporan Kejadian & Riwayat Letusan</a>
-                            <a href="logout.php" class="btn btn-danger mt-1 text-white">Logout</a>
-                        <?php else: ?>
-                            <!-- belum login -->
-                            <a href="mainpage.php">Beranda</a>
-                            <a href="status.php">Cek Status Gunung</a>
-                            <a href="info_gunung.php">Informasi Status Gunung Berapi</a>
-                            <a href="sebaran.php">Sebaran Wilayah Terdampak</a>
-                            <a href="dataPosko.php">Posko & Logistik</a>
-                            <a href="">Data Korban & Pengungsi</a>
-                            <a href="laporan.php">Laporan Kejadian & Riwayat Letusan</a>
-                            <a href="login.php" class="btn btn-danger mt-3 text-white">Login</a>
-                            <a href="registrasi.php" class="btn btn-danger mt-3 text-white">Registrasi</a>
-                        <?php endif; ?>
+                        <div class="d-grid col-12">
+                            <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true): ?>
+                                <!-- sudah login -->
+                                <a href="mainpage.php">Beranda</a>
+                                <a href="status.php">Cek Status Gunung</a>
+                                <a href="info_gunung.php">Informasi Status Gunung Berapi</a>
+                                <a href="sebaran.php">Sebaran Wilayah Terdampak</a>
+                                <a href="dataPosko.php">Posko & Logistik</a>
+                                <a href="dataKorban.php">Data Korban & Pengungsi</a>
+                                <a href="laporan.php">Laporan Kejadian & Riwayat Letusan</a>
+                                <a href="input_sebaran.php">Input Sebaran Wilayah Terdampak</a>
+                                <a href="input_dataposko.php">Input Posko & Logistik</a>
+                                <a href="input_laporan.php">Input Laporan Kejadian & Riwayat Letusan</a>
+                                <a href="logout.php" class="btn btn-danger mt-1 text-white">Logout</a>
+                            <?php else: ?>
+                                <!-- belum login -->
+                                <a href="mainpage.php">Beranda</a>
+                                <a href="status.php">Cek Status Gunung</a>
+                                <a href="info_gunung.php">Informasi Status Gunung Berapi</a>
+                                <a href="sebaran.php">Sebaran Wilayah Terdampak</a>
+                                <a href="dataPosko.php">Posko & Logistik</a>
+                                <a href="">Data Korban & Pengungsi</a>
+                                <a href="laporan.php">Laporan Kejadian & Riwayat Letusan</a>
+                                <a href="login.php" class="btn btn-danger mt-3 text-white">Login</a>
+                                <a href="registrasi.php" class="btn btn-danger mt-3 text-white">Registrasi</a>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
 
                 <!-- navbar brand and links -->
-                <a class="navbar-brand" href="#">Volcanoes Monitor</a>
+                <a class="navbar-brand" href="mainpage.php">Volcanoes Monitor</a>
             </div>
             <!-- navbar menu -->
             <div class="nav-menu">
@@ -354,10 +374,16 @@
             </div>
         </div>
     </nav>
-    
+
+
+
+    <h2 class="judul-poppins text-center mt-4 mb-4">Laporan Kejadian & Riwayat Letusan</h2>
+    <div class="date-display judul-poppins text-center mt-4 mb-4" id="current-date" aria-live="polite"></div>
+
+
     <main class="container" role="main">
         <section class="dashboard">
-            
+
             <div class="data-section" aria-labelledby="section-stats">
                 <h2 class="section-title" id="section-stats">Statistik Utama Dampak Bencana</h2>
                 <div class="stats-grid">
@@ -379,7 +405,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="data-section" aria-labelledby="section-detail">
                 <h2 class="section-title" id="section-detail">Rincian Korban Per Wilayah</h2>
                 <div class="table-responsive">
@@ -409,97 +435,212 @@
                     </table>
                 </div>
             </div>
-            
+
             <div class="data-section" aria-labelledby="section-logistic">
                 <h2 class="section-title" id="section-logistic">Data Logistik & Kebutuhan Mendesak <span aria-hidden="true">📦</span></h2>
                 <div class="logistics-grid">
                     <div class="logistics-card">
                         <h3>Kebutuhan Pangan</h3>
                         <ul class="needs-list" aria-label="Daftar Kebutuhan Pangan">
-                            <li>Beras:  2.000 kg </li>
-                            <li>Mie Instan:  500 dus </li>
-                            <li>Air Mineral:  1.000 galon </li>
-                            <li>Makanan Bayi:  150 kaleng </li>
-                            <li>Susu:  200 kotak </li>
+                            <li>Beras: 2.000 kg </li>
+                            <li>Mie Instan: 500 dus </li>
+                            <li>Air Mineral: 1.000 galon </li>
+                            <li>Makanan Bayi: 150 kaleng </li>
+                            <li>Susu: 200 kotak </li>
                         </ul>
                     </div>
                     <div class="logistics-card">
                         <h3>Kebutuhan Medis & Non-Pangan</h3>
                         <ul class="needs-list" aria-label="Daftar Kebutuhan Medis dan Non-Pangan">
-                            <li>Obat P3K:  500 paket </li>
-                            <li>Masker:  2.000 pcs </li>
-                            <li>Hand Sanitizer:  300 botol </li>
-                            <li>Selimut:  400 buah </li>
-                            <li>Tenda Darurat:  50 unit  </li>
+                            <li>Obat P3K: 500 paket </li>
+                            <li>Masker: 2.000 pcs </li>
+                            <li>Hand Sanitizer: 300 botol </li>
+                            <li>Selimut: 400 buah </li>
+                            <li>Tenda Darurat: 50 unit </li>
                         </ul>
                     </div>
                 </div>
             </div>
-            
+
             <div class="data-section" aria-labelledby="section-map">
                 <h2 class="section-title" id="section-map">Peta Lokasi Pengungsian <span aria-hidden="true">📍</span></h2>
                 <div id="map" style="height:400px; border-radius:8px;"></div>
             </div>
         </section>
     </main>
-    
-    <footer class="footer" role="contentinfo">
-        <div class="container">
-            <p>Sistem Informasi Manajemen Bencana Gunung Berapi &copy; <span id="year-display">2025</span></p>
+
+    <!-- footer -->
+    <footer>
+        <p class="fw-bolder">Volcanoes Monitor</p>
+        <p class="fw-bolder">Kontak Darurat</p>
+        <p class="fw-bolder">BNPB:</p>
+        <div style="user-select: all; padding: 12px; cursor: pointer;">
+            0812-1237575
         </div>
+
+        <div style="user-select: all; padding: 12px; cursor: pointer;">
+            021-29827444
+        </div>
+        <p class="fw-bolder">Telepon Darurat:</p>
+        <p>112</p>
+
+        <div class="popup-menu">
+            <p><a href="#tentang-kami">Tentang Kami</a></p>
+            <p><a href="#privasi">Kebijakan Privasi</a></p>
+            <p><a href="#syarat">Syarat & Ketentuan</a></p>
+        </div>
+
+        <div id="tentang-kami" class="popup">
+            <h3>Tentang Kami</h3>
+            <p>
+            <div class="popup-content">
+                <p><strong>Volcanoes Monitor</strong> adalah platform monitoring gunung berapi terintegrasi yang didedikasi untuk melindungi masyarakat dan mendukung para peneliti vulkanologi.</p>
+
+                <h4>Fitur Utama Kami:</h4>
+                <ul style="padding-left: 20px; margin-left: 0; text-align: left;">
+                    <li><strong>Beranda</strong> - Dashboard real-time aktivitas vulkanik terkini</li>
+                    <li><strong>Wilayah Terdampak</strong> - Pemetaan area risiko dan zona bahaya</li>
+                    <li><strong>Posko & Logistik</strong> - Informasi posko darurat dan distribusi bantuan</li>
+                    <li><strong>Data Korban & Pengungsi</strong> - Monitoring korban dan pengungsian</li>
+                    <li><strong>Laporan Kejadian & Riwayat Letusan</strong> - Dokumentasi historis dan laporan</li>
+                </ul>
+
+                <p>Platform kami menggabungkan data sensor, laporan lapangan, dan analisis ahli untuk memberikan informasi akurat dan tepat waktu.</p>
+
+                <p><em>Dibangun untuk keselamatan, didedikasikan untuk kehidupan.</em></p>
+            </div>
+            </p>
+            <a href="#">✕ Tutup</a>
+        </div>
+        <div class="overlay"></div>
+
+        <div id="privasi" class="popup">
+            <h3>Kebijakan Privasi</h3>
+            <p><strong>Volcanoes Monitor</strong> berkomitmen melindungi privasi pengguna kami. Kebijakan ini menjelaskan bagaimana kami mengumpulkan, menggunakan, dan melindungi informasi Anda.</p>
+
+            <h4>Informasi yang Kami Kumpulkan:</h4>
+            <ul style="padding-left: 20px; text-align: left;">
+                <li><strong>Data Lokasi</strong> - Untuk menampilkan informasi gunung berapi dan posko di wilayah Anda</li>
+                <li><strong>Data Laporan</strong> - Laporan aktivitas vulkanik</li>
+                <li><strong>Data Penggunaan</strong> - Statistik untuk improve layanan</li>
+                <li><strong>Data Darurat</strong> - Informasi kontak untuk notifikasi darurat</li>
+            </ul>
+
+            <h4>Penggunaan Data:</h4>
+            <ul style="padding-left: 20px; text-align: left;">
+                <li>Memberikan informasi aktivitas vulkanik</li>
+                <li>Mengirim notifikasi peringatan dini</li>
+                <li>Meningkatkan akurasi prediksi dan monitoring</li>
+                <li>Koordinasi tanggap darurat dengan pihak berwenang</li>
+            </ul>
+
+            <p><strong>Keamanan:</strong> Data Anda dilindungi dengan enkripsi dan hanya diakses oleh tim yang berwenang.</p>
+
+            <p><em>Terakhir diperbarui: 1 November 2025</em></p>
+
+            <a href="#">✕ Tutup</a>
+        </div>
+        <div class="overlay"></div>
+
+        <div id="syarat" class="popup">
+            <h3>Syarat & Ketentuan</h3>
+            <p>Dengan menggunakan <strong>Volcanoes Monitor</strong>, Anda menyetujui syarat dan ketentuan berikut:</p>
+
+            <h4>Penggunaan Layanan:</h4>
+            <ul style="padding-left: 20px; text-align: left;">
+                <li>Layanan ini ditujukan untuk informasi dan keselamatan publik</li>
+                <li>Data yang ditampilkan dapat berubah setelah adanya penyesuaian</li>
+                <li>Pengguna bertanggung jawab atas laporan yang disampaikan</li>
+                <li>Dilarang menyebarkan informasi palsu atau menyesatkan</li>
+            </ul>
+
+            <h4>Kewajiban Pengguna:</h4>
+            <ul style="padding-left: 20px; text-align: left;">
+                <li>Menyampaikan laporan yang akurat dan bertanggung jawab</li>
+                <li>Mengikuti instruksi evakuasi dari pihak berwenang</li>
+                <li>Tidak menyalahgunakan sistem untuk kepentingan pribadi</li>
+                <li>Menghormati privasi pengguna lain</li>
+            </ul>
+
+            <h4>Pembatasan Tanggung Jawab:</h4>
+            <ul style="padding-left: 20px; text-align: left;">
+                <li>Kami berusaha menyajikan informasi terakurat, namun tidak menjamin kelengkapan data</li>
+                <li>Pengguna disarankan selalu merujuk pada sumber resmi Badan Nasional Penanggulangan Bencana <a href="https://www.bnpb.go.id/">(BNPB)</a> dan Pusat Vulkanologi dan Mitigasi Bencana Geologi <a href="https://geologi.esdm.go.id/pvmbg"> (PVMBG)</a></li>
+                <li>Tidak bertanggung jawab atas kerugian akibat keterlambatan informasi</li>
+            </ul>
+
+            <p><strong>Perubahan Ketentuan:</strong> Kami dapat memperbarui syarat ini sewaktu-waktu.</p>
+
+            <p><em>Terakhir diperbarui: 1 November 2025</em></p>
+            <a href="#">✕ Tutup</a>
+        </div>
+        <div class="overlay"></div>
     </footer>
 
     <script>
-    const map = L.map('map').setView([-7.542, 110.445], 11); 
+        const map = L.map('map').setView([-7.542, 110.445], 11);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 18,
-        attribution: '© OpenStreetMap'
-    }).addTo(map);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
 
-    const pengungsian = [
-        { nama: "Posko Glagaharjo", lat: -7.6002, lon: 110.4821, kapasitas: 250 },
-        { nama: "Posko Umbulharjo", lat: -7.5659, lon: 110.4474, kapasitas: 180 },
-        { nama: "Posko Tegal Mulyo", lat: -7.5734, lon: 110.4639, kapasitas: 120 }
-    ];
+        const pengungsian = [{
+                nama: "Posko Glagaharjo",
+                lat: -7.6002,
+                lon: 110.4821,
+                kapasitas: 250
+            },
+            {
+                nama: "Posko Umbulharjo",
+                lat: -7.5659,
+                lon: 110.4474,
+                kapasitas: 180
+            },
+            {
+                nama: "Posko Tegal Mulyo",
+                lat: -7.5734,
+                lon: 110.4639,
+                kapasitas: 120
+            }
+        ];
 
-    pengungsian.forEach(posko => {
-        L.marker([posko.lat, posko.lon])
-            .addTo(map)
-            .bindPopup(
-                `<b>${posko.nama}</b><br>Kapasitas: ${posko.kapasitas} orang`
-            );
-    });
-</script>
+        pengungsian.forEach(posko => {
+            L.marker([posko.lat, posko.lon])
+                .addTo(map)
+                .bindPopup(
+                    `<b>${posko.nama}</b><br>Kapasitas: ${posko.kapasitas} orang`
+                );
+        });
+    </script>
 
 
     <script>
         function updateDateAndYear() {
             const now = new Date();
-            const dateOptions = { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
+            const dateOptions = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
             };
-            
+
             const dateElement = document.getElementById('current-date');
             if (dateElement) {
                 dateElement.textContent = 'Data Diperbarui: ' + now.toLocaleDateString('id-ID', dateOptions);
             }
-            
+
             const yearElement = document.getElementById('year-display');
             if (yearElement) {
                 yearElement.textContent = now.getFullYear();
             }
         }
-        
+
         // Inisialisasi
         document.addEventListener('DOMContentLoaded', function() {
             updateDateAndYear();
         });
     </script>
 </body>
+
 </html>
-
-
