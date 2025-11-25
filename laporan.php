@@ -3,7 +3,7 @@ session_start();
 include 'koneksi.php';
 require 'function.php';
 
-$data = query("SELECT waktu_laporan, judul_laporan, detail_laporan FROM laporan WHERE status_verifikasi = 'diverifikasi' ORDER BY waktu_laporan DESC");
+$data = query("SELECT waktu_laporan, judul_laporan, detail_laporan FROM laporan WHERE status_verifikasi = 'Terverifikasi' ORDER BY waktu_laporan DESC");
 
 if (isset($_POST["submit"])) {
     $data = cariLaporan($_POST["keywordLaporan"]);
@@ -449,6 +449,7 @@ if (isset($_POST["submit"])) {
 </body>
 
 </html>
+
 
 
 
